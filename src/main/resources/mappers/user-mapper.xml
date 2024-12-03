@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.healthypath.user.UserDao">
+
+  <select id="getAllUsers"
+    parameterType="com.springboot.healthypath.user.UserVO"
+    resultType="com.springboot.healthypath.user.UserVO">
+      SELECT * FROM users ORDER BY user_id DESC
+  </select>
+
+</mapper>

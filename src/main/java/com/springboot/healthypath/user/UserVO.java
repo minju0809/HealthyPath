@@ -14,6 +14,7 @@ public class UserVO {
   private double weight;
   private int height;
   private double bmi;
+  private String classification;
   private double bmr;
   private double goal;
   private String excluded_foods;

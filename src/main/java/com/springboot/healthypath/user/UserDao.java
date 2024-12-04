@@ -7,4 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserDao {
   List<UserVO> getAllUsers();
+  UserVO getUser(UserVO vo);
+  void insertUserEmailAndName(UserVO vo);
+  void updateUser(UserVO vo);
 }

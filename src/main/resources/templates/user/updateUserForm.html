@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>추가 정보 입력</title>
+</head>
+
+<body>
+  <h1>추가 정보 입력</h1>
+  <form action="/updateUser" method="post">
+    <label for="email">이메일:</label>
+    <input id="email" name="email" th:value="${session.user.email}" readonly><br>
+
+    <label for="name">이름:</label>
+    <input id="name" name="name" th:value="${session.user.name}"><br>
+
+    <label for="age">나이:</label>
+    <input type="number" id="age" name="age" required><br>
+
+    <label for="gender">성별:</label>
+    <select id="gender" name="gender" required>
+      <option value="남성">남성</option>
+      <option value="여성">여성</option>
+    </select><br>
+
+    <label for="weight">체중:</label>
+    <input type="number" id="weight" name="weight" step="0.1" required><br>
+
+    <label for="height">신장:</label>
+    <input type="number" id="height" name="height" step="0.1" required><br>
+
+    <label for="goal">목표 체중:</label>
+    <input type="number" id="goal" name="goal" step="0.1" required><br>
+
+    <label for="excluded_foods">제외할 재료:</label>
+    <div id="excludedFoodsContainer">
+      <input type="text" name="excluded_foods" placeholder="재료를 입력하세요">
+    </div>
+    <button type="button" onclick="addExcludedFood()">+ 추가</button><br>
+
+    <input type="submit" value="저장">
+  </form>
+
+  <script>
+    function addExcludedFood() {
+      const container = document.getElementById('excludedFoodsContainer');
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = 'excluded_foods';
+      input.placeholder = '재료를 입력하세요';
+      container.appendChild(input);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
 </head>
+
 <body>
+    <div>
+        <div th:if="${session.user == null}">
+            <a href="/signup" class="btn">회원가입/로그인</a>
+        </div>
+        <div th:if="${session.user != null}">
+            <h2 th:text="'환영합니다, ' + ${session.user.name} + '님!'"></h2>
+            <a href="/logout" class="btn">로그아웃</a>
+        </div>
+    </div>
     <h1>Users List</h1>
 
     <table border="1">
@@ -19,6 +30,7 @@
                 <th>Weight</th>
                 <th>Height</th>
                 <th>BMI</th>
+                <th>분류</th>
                 <th>BMR</th>
                 <th>GOAL</th>
                 <th>EXCLUDED_FOODS</th>
@@ -36,6 +48,7 @@
                 <td th:text="${user.weight}"></td>
                 <td th:text="${user.height}"></td>
                 <td th:text="${user.bmi}"></td>
+                <td th:text="${user.classification}"></td>
                 <td th:text="${user.bmr}"></td>
                 <td th:text="${user.goal}"></td>
                 <td th:text="${user.excluded_foods}"></td>
@@ -46,4 +59,5 @@
     </table>
 
 </body>
+
 </html>

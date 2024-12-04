@@ -10,4 +10,31 @@
       SELECT * FROM users ORDER BY user_id DESC
   </select>
 
+  <select id="getUser"
+    parameterType="com.springboot.healthypath.user.UserVO"
+    resultType="com.springboot.healthypath.user.UserVO">
+      SELECT * FROM users WHERE email = #{email}
+  </select>
+
+  <insert id="insertUserEmailAndName" parameterType="com.springboot.healthypath.user.UserVO">
+		INSERT INTO users (email, name)	VALUES (#{email}, #{name})
+	</insert>
+
+  <update id="updateUser" parameterType="com.springboot.healthypath.user.UserVO">
+    UPDATE users 
+      SET 
+        name = #{name},
+        age = #{age},
+        gender = #{gender},
+        weight = #{weight},
+        height = #{height},
+        bmi = #{bmi},
+        classification = #{classification},
+        bmr = #{bmr},
+        goal = #{goal},
+        excluded_foods = #{excluded_foods},
+        updated_at = CURRENT_TIMESTAMP
+      WHERE email = #{email}
+	</update>
+
 </mapper>

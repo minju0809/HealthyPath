@@ -13,4 +13,16 @@ public class UserService {
   public List<UserVO> getAllUsers() {
     return userDao.getAllUsers();
   }
+
+  public UserVO getUser(UserVO vo) {
+    return userDao.getUser(vo);
+  }
+
+  public void insertUserEmailAndName(UserVO vo) {
+    userDao.insertUserEmailAndName(vo);
+  }
+
+  public void updateUser(UserVO vo) {
+    userDao.updateUser(vo);
+  }
 }

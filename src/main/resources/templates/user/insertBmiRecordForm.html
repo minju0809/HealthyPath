@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>몸무게 정보 입력</title>
+</head>
+
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+  <h1>몸무게 정보 입력</h1>
+  <form action="/insertBmiRecord" method="post">
+    <input type="hidden" id="user_id" name="uesr_id" th:value="${session.user.user_id}"><br>
+
+    <label for="weight">체중:</label>
+    <input type="number" id="weight" name="weight" step="0.1" required><br>
+
+    <br>
+    <input type="submit" value="저장">
+  </form>
+  
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

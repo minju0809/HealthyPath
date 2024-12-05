@@ -10,4 +10,7 @@ public interface UserDao {
   UserVO getUser(UserVO vo);
   void insertUserEmailAndName(UserVO vo);
   void updateUser(UserVO vo);
+
+  List<BmiRecordVO> getBmiRecords(UserVO vo);
+  void insertBmiRecord(BmiRecordVO vo);
 }

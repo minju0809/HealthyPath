@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.healthypath.user.BmiRecordVO;
 import com.springboot.healthypath.user.UserService;
 import com.springboot.healthypath.user.UserVO;
 
@@ -126,23 +127,24 @@ public class UserController {
 
   @PostMapping("/updateUser")
   public String updateUser(UserVO vo, HttpSession session) {
-    UserVO user = (UserVO) session.getAttribute("user");
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (user != null) {
-      user.setName(vo.getName());
-      user.setAge(vo.getAge());
-      user.setGender(vo.getGender());
-      user.setWeight(vo.getWeight());
-      user.setHeight(vo.getHeight());
+    if (sessionUser != null) {
+      sessionUser.setName(vo.getName());
+      sessionUser.setAge(vo.getAge());
+      sessionUser.setGender(vo.getGender());
+      sessionUser.setWeight(vo.getWeight());
+      sessionUser.setHeight(vo.getHeight());
 
-      calculateBmiAndBmr(user);
+      calculateBmiAndBmr(sessionUser);
 
-      user.setGoal(vo.getGoal());
-      user.setExcluded_foods(vo.getExcluded_foods());
+      sessionUser.setGoal(vo.getGoal());
+      sessionUser.setExcluded_foods(vo.getExcluded_foods());
 
       // 사용자 정보를 데이터베이스에 저장하는 로직 추가
-      userService.updateUser(user);
-    }
+      userService.updateUser(sessionUser);
+    } 
+
     return "redirect:/"; // 메인 페이지로 리다이렉트
   }
 
@@ -153,16 +155,70 @@ public class UserController {
     return "redirect:/";
   }
 
-  @GetMapping("/getUser")
+  @GetMapping("/user/getUser")
   public String getUser(HttpSession session, Model model) {
-    UserVO user = (UserVO) session.getAttribute("user");
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (user != null) {
-      UserVO vo = userService.getUser(user);
-      System.out.println("userVO: " + vo);
+    if (sessionUser != null) {
+      UserVO vo = userService.getUser(sessionUser);
       model.addAttribute("user", vo);
 
       return "user/getUser";
+    } else {
+
+      return "redirect:/";
+    }
+  }
+
+  @GetMapping("/user/getBmiRecords")
+  public String getBmiRecords(HttpSession session, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    if (sessionUser != null) {
+      List<BmiRecordVO> records = userService.getBmiRecords(sessionUser);
+      model.addAttribute("records", records);
+
+      return "user/getBmiRecords";
+    } else {
+
+      return "redirect:/";
+    }
+  }
+
+  
+  @GetMapping("/insertBmiRecordForm")
+  public String insertBmiRecordForm(HttpSession session) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    if (sessionUser != null) {
+
+      return "user/insertBmiRecordForm";
+    } else {
+
+      return "redirect:/";
+    }
+  }
+
+  @PostMapping("/insertBmiRecord")
+  public String insertBmiRecord(BmiRecordVO vo, HttpSession session) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    if (sessionUser != null) {
+      UserVO user = userService.getUser(sessionUser);
+
+      user.setWeight(vo.getWeight());
+
+      calculateBmiAndBmr(user);
+  
+      vo.setUser_id(user.getUser_id());
+      vo.setBmi(user.getBmi());
+      vo.setClassification(user.getClassification());
+      vo.setBmr(user.getBmr());
+  
+      // BMI 기록 삽입
+      userService.insertBmiRecord(vo);
+
+      return "redirect:/user/getBmiRecords"; 
     } else {
 
       return "redirect:/";

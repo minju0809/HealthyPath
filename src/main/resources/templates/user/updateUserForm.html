@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <!-- <div th:insert="fragments/header :: header"></div> -->
+  <!-- <div th:insert="~{fragments/header :: header}"></div> -->
   <h1>추가 정보 입력</h1>
   <form action="/updateUser" method="post">
     <label for="email">이메일:</label>
@@ -55,7 +55,7 @@
     }
   </script>
   
-  <div th:insert="fragments/footer :: footer"></div>
+  <div th:insert="~{fragments/footer :: footer}"></div>
 </body>
 
 </html>

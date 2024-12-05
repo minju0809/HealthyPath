@@ -25,4 +25,12 @@ public class UserService {
   public void updateUser(UserVO vo) {
     userDao.updateUser(vo);
   }
+
+  public List<BmiRecordVO> getBmiRecords(UserVO vo) {
+    return userDao.getBmiRecords(vo);
+  }
+
+  public void insertBmiRecord(BmiRecordVO vo) {
+    userDao.insertBmiRecord(vo);
+  }
 }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bmi Records</title>
+</head>
+
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+
+  <h1>Bmi Records<a href="/insertBmiRecordForm" style="float: right; font-size: 16px; margin-right: 16px;">몸무게 등록</a></h1>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>BmiRecordID</th>
+        <th>ID</th>
+        <th>몸무게</th>
+        <th>BMI</th>
+        <th>분류</th>
+        <th>BMR</th>
+        <th>등록일</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="record : ${records}">
+        <td th:text="${record.bmi_record_id}"></td>
+        <td th:text="${record.user_id}"></td>
+        <td th:text="${record.weight}"></td>
+        <td th:text="${record.bmi}"></td>
+        <td th:text="${record.classification}"></td>
+        <td th:text="${record.bmr}"></td>
+        <td th:text="${record.created_at}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

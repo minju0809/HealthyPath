@@ -37,4 +37,15 @@
       WHERE email = #{email}
 	</update>
 
+  <select id="getBmiRecords"
+    parameterType="com.springboot.healthypath.user.UserVO"
+    resultType="com.springboot.healthypath.user.BmiRecordVO">
+      SELECT * FROM bmi_records WHERE user_id = #{user_id}
+  </select>
+
+  <insert id="insertBmiRecord" parameterType="com.springboot.healthypath.user.BmiRecordVO">
+		INSERT INTO bmi_records (user_id, weight, bmi, classification, bmr)	
+      VALUES (#{user_id}, #{weight}, #{bmi}, #{classification}, #{bmr})
+	</insert>
+
 </mapper>

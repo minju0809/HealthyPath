@@ -5,19 +5,16 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class UserVO {
+public class BmiRecordVO {
+  private Long bmi_record_id;
   private Long user_id;
-  private String email;
-  private String name;
-  private int age;
-  private String gender;
   private double weight;
-  private double height;
   private double bmi;
   private String classification;
   private double bmr;
-  private double goal;
-  private String excluded_foods;
   private Date created_at;
-  private Date updated_at;
+
+  private int age;
+  private String gender;
+  private double height;
 }

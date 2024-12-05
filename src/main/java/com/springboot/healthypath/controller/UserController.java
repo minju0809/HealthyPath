@@ -153,6 +153,23 @@ public class UserController {
     return "redirect:/";
   }
 
+  @GetMapping("/getUser")
+  public String getUser(HttpSession session, Model model) {
+    UserVO user = (UserVO) session.getAttribute("user");
+
+    if (user != null) {
+      UserVO vo = userService.getUser(user);
+      System.out.println("userVO: " + vo);
+      model.addAttribute("user", vo);
+
+      return "user/getUser";
+    } else {
+
+      return "redirect:/";
+    }
+  }
+
+
   @GetMapping("/")
   public String getAllUsers(Model model) {
     List<UserVO> users = userService.getAllUsers();

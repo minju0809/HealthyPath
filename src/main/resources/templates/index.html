@@ -14,6 +14,7 @@
         </div>
         <div th:if="${session.user != null}">
             <h2 th:text="'환영합니다, ' + ${session.user.name} + '님!'"></h2>
+            <a href="/getUser" class="btn">마이페이지</a>
             <a href="/logout" class="btn">로그아웃</a>
         </div>
     </div>
@@ -27,8 +28,8 @@
                 <th>Name</th>
                 <th>Age</th>
                 <th>Gender</th>
-                <th>Weight</th>
                 <th>Height</th>
+                <th>Weight</th>
                 <th>BMI</th>
                 <th>분류</th>
                 <th>BMR</th>
@@ -45,8 +46,8 @@
                 <td th:text="${user.name}"></td>
                 <td th:text="${user.age}"></td>
                 <td th:text="${user.gender}"></td>
-                <td th:text="${user.weight}"></td>
                 <td th:text="${user.height}"></td>
+                <td th:text="${user.weight}"></td>
                 <td th:text="${user.bmi}"></td>
                 <td th:text="${user.classification}"></td>
                 <td th:text="${user.bmr}"></td>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPage</title>
+  <script>
+    function calculateValues() {
+      const weight = parseFloat(document.getElementById('weight').value) || 0;
+      const height = parseFloat(document.getElementById('height').value) || 0;
+      const age = parseInt(document.getElementById('age').value) || 0;
+      const gender = document.getElementById('gender').value;
+
+      if (height > 0 && weight > 0) {
+        // BMI 계산
+        const heightInMeters = height / 100.0;
+        const bmi = weight / (heightInMeters * heightInMeters);
+        const roundedBmi = Math.round(bmi * 100.0) / 100.0;
+
+        document.getElementById('bmi').value = roundedBmi;
+
+        // 분류 계산
+        let classification = "";
+        if (bmi < 18.5) {
+          classification = "저체중";
+        } else if (bmi < 25.0) {
+          classification = "정상";
+        } else if (bmi < 30.0) {
+          classification = "과체중";
+        } else {
+          classification = "비만";
+        }
+        document.getElementById('classification').value = classification;
+
+        // BMR 계산
+        let bmr = 0;
+        if (gender === "남성") {
+          bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+        } else if (gender === "여성") {
+          bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+        }
+        document.getElementById('bmr').value = Math.round(bmr * 100.0) / 100.0;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div>
+    <div th:if="${session.user == null}">
+      <a href="/signup" class="btn">회원가입/로그인</a>
+    </div>
+    <div th:if="${session.user != null}">
+      <h2 th:text="'환영합니다, ' + ${session.user.name} + '님!'"></h2>
+      <a href="/logout" class="btn">로그아웃</a>
+    </div>
+  </div>
+  <h1>My Page</h1>
+
+  <form th:action="@{/updateUser}" method="post">
+    <table border="1">
+      <tr>
+        <th>User ID</th>
+        <td><input type="text" name="user_id" th:value="${user.user_id}" readonly></td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td><input type="email" name="email" th:value="${user.email}" readonly></td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td><input type="text" name="name" th:value="${user.name}"></td>
+      </tr>
+      <tr>
+        <th>Age</th>
+        <td><input type="number" id="age" name="age" th:value="${user.age}" onchange="calculateValues()"></td>
+      </tr>
+      <tr>
+        <th>Gender</th>
+        <td>
+          <select id="gender" name="gender" onchange="calculateValues()">
+            <option value="남성" th:selected="${user.gender == '남성'}">남성</option>
+            <option value="여성" th:selected="${user.gender == '여성'}">여성</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>Height</th>
+        <td><input type="number" step="0.1" id="height" name="height" th:value="${user.height}"
+            onchange="calculateValues()"></td>
+      </tr>
+      <tr>
+        <th>Weight</th>
+        <td><input type="number" step="0.1" id="weight" name="weight" th:value="${user.weight}"
+            onchange="calculateValues()"></td>
+      </tr>
+      <tr>
+        <th>BMI</th>
+        <td><input type="text" id="bmi" name="bmi" th:value="${user.bmi}" readonly></td>
+      </tr>
+      <tr>
+        <th>분류</th>
+        <td><input type="text" id="classification" name="classification" th:value="${user.classification}" readonly>
+        </td>
+      </tr>
+      <tr>
+        <th>BMR</th>
+        <td><input type="text" id="bmr" name="bmr" th:value="${user.bmr}" readonly></td>
+      </tr>
+      <tr>
+        <th>GOAL</th>
+        <td><input type="text" name="goal" th:value="${user.goal}"></td>
+      </tr>
+      <tr>
+        <th>EXCLUDED_FOODS</th>
+        <td><input type="text" name="excluded_foods" th:value="${user.excluded_foods}" placeholder="콤마로 구분하세요"></td>
+      </tr>
+      <tr>
+        <th>Created At</th>
+        <td><input type="text" th:value="${user.created_at}" readonly></td>
+      </tr>
+      <tr>
+        <th>Updated At</th>
+        <td><input type="text" th:value="${user.updated_at}" readonly></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          <button type="submit">수정</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+</body>
+
+</html>

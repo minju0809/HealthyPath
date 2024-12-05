@@ -1,0 +1,23 @@
+<div th:fragment="header">
+  <!-- 상단 제목 -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #ddd;">
+    <!-- 제목 -->
+    <div>
+      <h1 style="margin: 0; font-size: 24px; color: #333;">
+        <a href="/">HealthyPath</a>
+      </h1>
+    </div>
+
+    <!-- 버튼 -->
+    <div>
+      <div th:if="${session.user == null}" style="text-align: right;">
+        <a href="/signup" class="btn" style="margin-left: 10px;">회원가입/로그인</a>
+      </div>
+      <div th:if="${session.user != null}" style="text-align: right;">
+        <span th:text="'환영합니다, ' + ${session.user.name} + '님!'" style="margin-right: 10px; font-size: 14px;"></span>
+        <a href="/getUser" class="btn" style="margin-left: 10px;">마이페이지</a>
+        <a href="/logout" class="btn" style="margin-left: 10px;">로그아웃</a>
+      </div>
+    </div>
+  </div>
+</div>

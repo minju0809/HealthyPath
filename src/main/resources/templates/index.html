@@ -8,35 +8,25 @@
 </head>
 
 <body>
-    <div>
-        <div th:if="${session.user == null}">
-            <a href="/signup" class="btn">회원가입/로그인</a>
-        </div>
-        <div th:if="${session.user != null}">
-            <h2 th:text="'환영합니다, ' + ${session.user.name} + '님!'"></h2>
-            <a href="/getUser" class="btn">마이페이지</a>
-            <a href="/logout" class="btn">로그아웃</a>
-        </div>
-    </div>
+    <div th:insert="fragments/header :: header"></div>
+    
     <h1>Users List</h1>
 
     <table border="1">
         <thead>
             <tr>
-                <th>User ID</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Height</th>
-                <th>Weight</th>
+                <th>ID</th>
+                <th>이메일</th>
+                <th>이름</th>
+                <th>나이</th>
+                <th>성별</th>
+                <th>키</th>
+                <th>몸무게</th>
                 <th>BMI</th>
                 <th>분류</th>
                 <th>BMR</th>
-                <th>GOAL</th>
-                <th>EXCLUDED_FOODS</th>
-                <th>Created At</th>
-                <th>Updated At</th>
+                <th>목표</th>
+                <th>제외재료</th>
             </tr>
         </thead>
         <tbody>
@@ -53,12 +43,11 @@
                 <td th:text="${user.bmr}"></td>
                 <td th:text="${user.goal}"></td>
                 <td th:text="${user.excluded_foods}"></td>
-                <td th:text="${user.created_at}"></td>
-                <td th:text="${user.updated_at}"></td>
             </tr>
         </tbody>
     </table>
 
+    <div th:insert="fragments/footer :: footer"></div>
 </body>
 
 </html>

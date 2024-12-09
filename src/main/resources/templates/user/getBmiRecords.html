@@ -1,43 +1,295 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bmi Records</title>
+
+  <!-- 개별 버튼 버전 -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" th:inline="javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(initChart);
+
+    function initChart() {
+      const records = /*[[${records}]]*/[];
+
+      // 데이터 준비 함수: 각 값은 날짜 및 특정 데이터 값을 가지고 있습니다.
+      function prepareData(dataKey) {
+        return records.map((record, index) => {
+          const date = record.created_at ? new Date(record.created_at) : null;
+          const dateLabel = date ? `${date.getMonth() + 1}/${date.getDate()}` : null; // mm/dd 형식
+          return [index, record[dataKey], record[dataKey].toString(), dateLabel];
+        });
+      }
+
+      // 데이터셋 준비
+      const dataSets = {
+        weight: prepareData('weight'),
+        bmi: prepareData('bmi'),
+        bmr: prepareData('bmr')
+      };
+
+      // 평균 계산 함수
+      function calculateAverage(data) {
+        const sum = data.reduce((total, value) => total + value, 0);
+        return sum / data.length;
+      }
+
+      // 평균 및 ±15% 범위 계산
+      function calculateRange(average) {
+        const range = average * 0.15;
+        return { min: average - range, max: average + range };
+      }
+
+      // 평균 값과 범위 계산
+      const weightAvg = calculateAverage(dataSets.weight.map(record => record[1]));
+      const bmiAvg = calculateAverage(dataSets.bmi.map(record => record[1]));
+      const bmrAvg = calculateAverage(dataSets.bmr.map(record => record[1]));
+
+      const weightRange = calculateRange(weightAvg);
+      const bmiRange = calculateRange(bmiAvg);
+      const bmrRange = calculateRange(bmrAvg);
+
+      const pageSize = 10; // 한 페이지에 표시할 데이터 개수
+
+      // 각 차트의 페이지 상태 관리
+      let pageState = {
+        weight: { startIndex: Math.max(0, dataSets.weight.length - pageSize), endIndex: dataSets.weight.length },
+        bmi: { startIndex: Math.max(0, dataSets.bmi.length - pageSize), endIndex: dataSets.bmi.length },
+        bmr: { startIndex: Math.max(0, dataSets.bmr.length - pageSize), endIndex: dataSets.bmr.length }
+      };
+
+      // 차트 렌더링 함수
+      function drawChart(dataKey, chartId, vAxisMin, vAxisMax, startIndex, endIndex) {
+        const visibleData = dataSets[dataKey].slice(startIndex, endIndex);
+
+        const data = new google.visualization.DataTable();
+        data.addColumn('number', 'Index');
+        data.addColumn('number', `${dataKey.charAt(0).toUpperCase() + dataKey.slice(1)}`);
+        data.addColumn({ type: 'string', role: 'annotation' });
+        data.addColumn({ type: 'string', role: 'tooltip' });
+
+        data.addRows(visibleData);
+
+        const options = {
+          title: `${dataKey.charAt(0).toUpperCase() + dataKey.slice(1)}`,
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          hAxis: {
+            title: 'Date',
+            ticks: visibleData.map(row => ({ v: row[0], f: row[3] || '' })),
+          },
+          vAxis: {
+            title: `${dataKey.charAt(0).toUpperCase() + dataKey.slice(1)}`,
+            minValue: vAxisMin,
+            maxValue: vAxisMax,
+          },
+        };
+
+        const chart = new google.visualization.LineChart(document.getElementById(chartId));
+        chart.draw(data, options);
+
+        // 버튼 상태 업데이트
+        document.getElementById(`prevBtn-${dataKey}`).disabled = startIndex <= 0;
+        document.getElementById(`nextBtn-${dataKey}`).disabled = endIndex >= dataSets[dataKey].length;
+      }
+
+      // 페이지 이동 버튼 이벤트
+      function handlePagination(dataKey, direction) {
+        const startIndex = pageState[dataKey].startIndex;
+        const endIndex = pageState[dataKey].endIndex;
+
+        if (direction === 'prev' && startIndex > 0) {
+          pageState[dataKey].startIndex--;
+          pageState[dataKey].endIndex--;
+        } else if (direction === 'next' && endIndex < dataSets[dataKey].length) {
+          pageState[dataKey].startIndex++;
+          pageState[dataKey].endIndex++;
+        }
+
+        drawChart(dataKey, `${dataKey}_chart`,
+          { weight: weightRange, bmi: bmiRange, bmr: bmrRange }[dataKey].min,
+          { weight: weightRange, bmi: bmiRange, bmr: bmrRange }[dataKey].max,
+          pageState[dataKey].startIndex,
+          pageState[dataKey].endIndex);
+      }
+
+      // // 이전 및 다음 버튼 이벤트 등록
+      ['weight', 'bmi', 'bmr'].forEach(dataKey => {
+        // 이벤트 리스너 등록
+        document.getElementById(`prevBtn-${dataKey}`).addEventListener('click', () => handlePagination(dataKey, 'prev'));
+        document.getElementById(`nextBtn-${dataKey}`).addEventListener('click', () => handlePagination(dataKey, 'next'));
+
+        // 차트 초기 렌더링
+        drawChart(dataKey, `${dataKey}_chart`,
+          { weight: weightRange, bmi: bmiRange, bmr: bmrRange }[dataKey].min,
+          { weight: weightRange, bmi: bmiRange, bmr: bmrRange }[dataKey].max,
+          pageState[dataKey].startIndex,
+          pageState[dataKey].endIndex);
+      });
+    }
+  </script>
+
+  <!-- 버튼 하나 버전 -->
+  <!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" th:inline="javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(initChart);
+
+    function initChart() {
+      const records = /*[[${records}]]*/[];
+
+      // 데이터셋 준비
+      const dataSets = ['weight', 'bmi', 'bmr'].reduce((acc, key) => {
+        acc[key] = records.map((record, index) => {
+          const date = record.created_at ? new Date(record.created_at) : null;
+          const dateLabel = date ? `${date.getMonth() + 1}/${date.getDate()}` : null;
+          return [index, record[key], record[key].toString(), dateLabel];
+        });
+        return acc;
+      }, {});
+
+      // 평균 계산 함수
+      function calculateAverage(data) {
+        return data.reduce((total, value) => total + value, 0) / data.length;
+      }
+
+      // 데이터셋의 평균 값과 ±15% 범위 계산
+      const averages = ['weight', 'bmi', 'bmr'].reduce((acc, key) => {
+        const avg = calculateAverage(dataSets[key].map(record => record[1]));
+        acc[key] = {
+          avg,
+          range: avg * 0.15,
+          min: avg - (avg * 0.15),
+          max: avg + (avg * 0.15),
+        };
+        return acc;
+      }, {});
+
+      const pageSize = 10;
+      let endIndex = dataSets.weight.length;
+      let startIndex = Math.max(0, endIndex - pageSize);
+
+      // 차트 렌더링 함수
+      function drawChart(dataKey, chartId) {
+        const visibleData = dataSets[dataKey].slice(startIndex, endIndex);
+
+        const data = new google.visualization.DataTable();
+        data.addColumn('number', 'Index');
+        data.addColumn('number', `${dataKey.charAt(0).toUpperCase() + dataKey.slice(1)} (kg)`);
+        data.addColumn({ type: 'string', role: 'annotation' });
+        data.addColumn({ type: 'string', role: 'tooltip' });
+        data.addRows(visibleData);
+
+        const options = {
+          title: `${dataKey.charAt(0).toUpperCase() + dataKey.slice(1)} (kg)`,
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          hAxis: {
+            title: 'Date',
+            ticks: visibleData.map(row => ({ v: row[0], f: row[3] || '' })),
+          },
+          vAxis: {
+            title: `${dataKey.charAt(0).toUpperCase() + dataKey.slice(1)} (kg)`,
+            minValue: averages[dataKey].min,
+            maxValue: averages[dataKey].max,
+          },
+        };
+
+        const chart = new google.visualization.LineChart(document.getElementById(chartId));
+        chart.draw(data, options);
+
+        // 버튼 상태 업데이트
+        document.getElementById('prevBtn').disabled = startIndex <= 0;
+        document.getElementById('nextBtn').disabled = endIndex >= dataSets[dataKey].length;
+      }
+
+      // 이전 버튼 이벤트
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        if (startIndex > 0) {
+          startIndex--;
+          endIndex--;
+          ['weight', 'bmi', 'bmr'].forEach(key => drawChart(key, `${key}_chart`));
+        }
+      });
+
+      // 다음 버튼 이벤트
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        if (endIndex < dataSets.weight.length) {
+          startIndex++;
+          endIndex++;
+          ['weight', 'bmi', 'bmr'].forEach(key => drawChart(key, `${key}_chart`));
+        }
+      });
+
+      // 초기 차트 렌더링
+      ['weight', 'bmi', 'bmr'].forEach(key => drawChart(key, `${key}_chart`));
+    }
+  </script> -->
+
+  <style>
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .chart-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
   <div th:insert="~{fragments/header :: header}"></div>
 
-  <h1>Bmi Records<a href="/insertBmiRecordForm" style="float: right; font-size: 16px; margin-right: 16px;">몸무게 등록</a></h1>
+  <h1>Bmi Records<a href="/insertBmiRecordForm" style="float: right; font-size: 16px; margin-right: 16px;">몸무게 등록</a>
+  </h1>
 
-  <table border="1">
-    <thead>
-      <tr>
-        <th>BmiRecordID</th>
-        <th>ID</th>
-        <th>몸무게</th>
-        <th>BMI</th>
-        <th>분류</th>
-        <th>BMR</th>
-        <th>등록일</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="record : ${records}">
-        <td th:text="${record.bmi_record_id}"></td>
-        <td th:text="${record.user_id}"></td>
-        <td th:text="${record.weight}"></td>
-        <td th:text="${record.bmi}"></td>
-        <td th:text="${record.classification}"></td>
-        <td th:text="${record.bmr}"></td>
-        <td th:text="${record.created_at}"></td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- 개별 버튼 버전 -->
+  <div class="chart-container">
+    <div id="weight_chart" style="width: 900px; height: 300px;"></div>
+    <div class="chart-buttons">
+      <button id="prevBtn-weight">이전 (Weight)</button>
+      <button id="nextBtn-weight" disabled>다음 (Weight)</button>
+    </div>
+  </div>
 
-  <div th:insert="~{fragments/footer :: footer}"></div>
+  <div class="chart-container">
+    <div id="bmi_chart" style="width: 900px; height: 300px;"></div>
+    <div class="chart-buttons">
+      <button id="prevBtn-bmi">이전 (BMI)</button>
+      <button id="nextBtn-bmi" disabled>다음 (BMI)</button>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div id="bmr_chart" style="width: 900px; height: 300px;"></div>
+    <div class="chart-buttons">
+      <button id="prevBtn-bmr">이전 (BMR)</button>
+      <button id="nextBtn-bmr" disabled>다음 (BMR)</button>
+    </div>
+  </div>
+
+  <!-- 버튼 하나 버전 -->
+  <!-- <br />
+  <br />
+  <div class="chart-container">
+    <div id="weight_chart" style="width: 900px; height: 500px;"></div>
+    <div id="bmi_chart" style="width: 900px; height: 500px;"></div>
+    <div id="bmr_chart" style="width: 900px; height: 500px;"></div>
+    <div class="chart-buttons">
+      <button id="prevBtn">이전</button>
+      <button id="nextBtn" disabled>다음</button>
+    </div>
+  </div> -->
 </body>
 
 </html>

@@ -9,6 +9,7 @@ import com.springboot.healthypath.food.FoodService;
 import com.springboot.healthypath.food.FoodVO;
 import com.springboot.healthypath.food.NutrientService;
 
+
 @Controller
 public class FoodController {
   @Autowired
@@ -18,8 +19,7 @@ public class FoodController {
   private NutrientService nutrientService;
 
   @GetMapping("/")
-  public String getFoods(FoodVO vo,
-      Model model) {
+  public String getFoods(FoodVO vo, Model model) {
     if (vo.getPage() == 0) {
       vo.setPage(1);
     }
@@ -64,5 +64,13 @@ public class FoodController {
     model.addAttribute("end_page", result.get("end_page"));
 
     return "index";
+  }
+
+  @GetMapping("/food/getFood/{idx}")
+  public String getFood(FoodVO vo, Model model) {
+    model.addAttribute("food", foodService.getFood(vo));
+    System.out.println("foodService.getFood(vo): " + foodService.getFood(vo));
+
+    return "food/getFood";
   }
 }

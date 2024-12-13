@@ -10,4 +10,5 @@ public interface FoodDao {
   List<FoodVO> searchFoodByName(Map<String, Object> params);
   List<FoodVO> searchFoodByNutrient(Map<String, Object> params);
   int countTotalRecords(Map<String, Object> params);
+  FoodVO getFood(FoodVO vo);
 }

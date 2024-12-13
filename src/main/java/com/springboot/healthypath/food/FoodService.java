@@ -12,7 +12,6 @@ public class FoodService {
   @Autowired
   private FoodDao foodDao;
 
-
   public Map<String, Object> searchFood(FoodVO vo) {
     int page_size = 10;
     int offset = Math.max((vo.getPage() - 1) * page_size, 0); // 음수 방지
@@ -49,5 +48,10 @@ public class FoodService {
     result.put("end_page", end_page);
 
     return result;
+  }
+
+  public FoodVO getFood(FoodVO vo) {
+    
+    return foodDao.getFood(vo);
   }
 }

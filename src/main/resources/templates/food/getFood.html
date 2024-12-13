@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>상세보기</title>
+</head>
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+
+  <h1>상세 정보</h1>
+  
+  <table border=1>
+    <tr>
+      <th>식품명</th>
+      <td th:text="${food.food_name}"></td>
+      <th>데이터구분</th>
+      <td th:text="${food.data_type_name}"></td>
+      <th>식품기원</th>
+      <td th:text="${food.origin_name}"></td>
+      <th>식품대분류명</th>
+      <td th:text="${food.major_category_name}"></td>
+      <th>식품중분류명</th>
+      <td th:text="${food.middle_category_name}"></td>
+      <th>식품소분류명</th>
+      <td th:text="${food.minor_category_name}"></td>
+    </tr>
+    <tr>
+      <th>대표식품명</th>
+      <td th:text="${food.representative_food_name}"></td>
+      <th>총 내용량</th>
+      <td th:text="${food.food_weight}"></td>
+      <th>영양성분 함량 기준량</th>
+      <td th:text="${food.nutrient_reference_amount}"></td>
+      <th>데이터생성방법명</th>
+      <td th:text="${food.data_creation_method_name}"></td>
+      <th>데이터생성일자</th>
+      <td th:text="${food.data_creation_date}"></td>
+      <th>데이터기준일자</th>
+      <td th:text="${food.data_standards_date}"></td>
+    </tr>
+  </table>
+    
+  <table width=500px border=1>
+    <thead>
+      <tr>
+        <th>분류</th>
+        <th>영양성분</th>
+        <th>100g 당 함량</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- 일반성분 -->
+        <tr>
+        <td rowspan="7">일반성분</td>
+        <td>에너지</td>
+        <td th:text="${food.energy_kcal} + ' kcal'"></td>
+      </tr>
+      <tr>
+        <td>탄수화물</td>
+        <td th:text="${food.carbohydrate_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>지방</td>
+        <td th:text="${food.fat_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>단백질</td>
+        <td th:text="${food.protein_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>수분</td>
+        <td th:text="${food.moisture_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>회분</td>
+        <td th:text="${food.ash_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>식이섬유</td>
+        <td th:text="${food.dietary_fiber_g} + ' g'"></td>
+      </tr>
+      <!-- 당류 -->
+      <tr>
+        <td rowspan="6">당류</td>
+        <td>당류</td>
+        <td th:text="${food.sugar_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>자당</td>
+        <td th:text="${food.sucrose_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>포도당</td>
+        <td th:text="${food.glucose_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>과당</td>
+        <td th:text="${food.fructose_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>유당</td>
+        <td th:text="${food.lactose_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>맥아당</td>
+        <td th:text="${food.maltose_g} + ' g'"></td>
+      </tr>
+      <!-- 무기질 -->
+      <tr>
+        <td rowspan="10">무기질</td>
+        <td>나트륨</td>
+        <td th:text="${food.sodium_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>구리</td>
+        <td th:text="${food.copper_ug} + ' μg'"></td>
+      </tr>
+      <tr>
+        <td>마그네슘</td>
+        <td th:text="${food.magnesium_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>망간</td>
+        <td th:text="${food.manganese_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>셀레늄</td>
+        <td th:text="${food.selenium_ug} + ' μg'"></td>
+      </tr>
+      <tr>
+        <td>아연</td>
+        <td th:text="${food.zinc_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>인</td>
+        <td th:text="${food.phosphorus_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>철</td>
+        <td th:text="${food.iron_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>칼륨</td>
+        <td th:text="${food.potassium_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>칼슘</td>
+        <td th:text="${food.calcium_mg} + ' mg'"></td>
+      </tr>
+      <!-- 비타민 -->
+      <tr>
+        <td rowspan="12">비타민</td>
+        <td>니아신</td>
+        <td th:text="${food.niacin_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>비타민 A</td>
+        <td th:text="${food.vitamin_a_ug_rae} + ' μg RAE'"></td>
+      </tr>
+      <tr>
+        <td>베타카로틴</td>
+        <td th:text="${food.beta_carotene_ug} + ' μg'"></td>
+      </tr>
+      <tr>
+        <td>티아민</td>
+        <td th:text="${food.thiamine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>리보플라빈</td>
+        <td th:text="${food.riboflavin_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>비타민 B12</td>
+        <td th:text="${food.vitamin_b12_ug} + ' μg'"></td>
+      </tr>
+      <tr>
+        <td>비타민 C</td>
+        <td th:text="${food.vitamin_c_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>비타민 D</td>
+        <td th:text="${food.vitamin_d_ug} + ' μg'"></td>
+      </tr>
+      <tr>
+        <td>토코페롤</td>
+        <td th:text="${food.tocopherol_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>토코트리에놀</td>
+        <td th:text="${food.tocotrienol_mg} + ' μg'"></td>
+      </tr>
+      <tr>
+        <td>엽산</td>
+        <td th:text="${food.folate_ug_dfe} + ' μg DFE'"></td>
+      </tr>
+      <tr>
+        <td>레티놀</td>
+        <td th:text="${food.retinol_ug} + ' μg'"></td>
+      </tr>
+      <!-- 지방산 -->
+      <tr>
+        <td rowspan="29">지방산</td>
+        <td>포화지방산</td>
+        <td th:text="${food.saturated_fatty_acids_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>트랜스지방산</td>
+        <td th:text="${food.trans_fatty_acids_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>콜레스테롤</td>
+        <td th:text="${food.cholesterol_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>리놀레산</td>
+        <td th:text="${food.linoleic_acid_18_2_n6_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>알파리놀렌산</td>
+        <td th:text="${food.alpha_linolenic_acid_18_3_n3_g} + ' g'"></td>
+      </tr>
+      <tr>
+        <td>감마리놀렌산</td>
+        <td th:text="${food.gamma_linolenic_acid_18_3_n6_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>부티르산</td>
+        <td th:text="${food.butyric_acid_4_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>카프로산</td>
+        <td th:text="${food.caproic_acid_6_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>카프릴산</td>
+        <td th:text="${food.caprylic_acid_8_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>카프르산</td>
+        <td th:text="${food.capric_acid_10_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>라우르산</td>
+        <td th:text="${food.lauric_acid_12_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>미리스트산</td>
+        <td th:text="${food.myristic_acid_14_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>팔미트산</td>
+        <td th:text="${food.palmitic_acid_16_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>스테아르산</td>
+        <td th:text="${food.stearic_acid_18_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>아라키드산</td>
+        <td th:text="${food.arachidic_acid_20_0_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>미리스톨레산</td>
+        <td th:text="${food.myristoleic_acid_14_1_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>팔미톨레산</td>
+        <td th:text="${food.palmitoleic_acid_16_1_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>올레산</td>
+        <td th:text="${food.oleic_acid_18_1_n9_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>박센산</td>
+        <td th:text="${food.vaccenic_acid_18_1_n7_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>가돌레산</td>
+        <td th:text="${food.gadoleic_acid_20_1_n11_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>에이코사디에노산</td>
+        <td th:text="${food.eicosadienoic_acid_20_2_n6_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>아라키돈산</td>
+        <td th:text="${food.arachidonic_acid_20_4_n6_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>에이코사트리에노산</td>
+        <td th:text="${food.eicosatrienoic_acid_20_3_n6_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>에이코사펜타에노산</td>
+        <td th:text="${food.eicosapentaenoic_acid_20_5_n3_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>도코사펜타에노산</td>
+        <td th:text="${food.docosapentaenoic_acid_22_5_n3_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>도코사헥사에노산</td>
+        <td th:text="${food.docosahexaenoic_acid_22_6_n3_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>트랜스 올레산</td>
+        <td th:text="${food.trans_oleic_acid_18_1_trans_n9_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>트랜스 리놀레산</td>
+        <td th:text="${food.trans_linoleic_acid_18_2t_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>트랜스 리놀렌산</td>
+        <td th:text="${food.trans_linolenic_acid_18_3t_mg} + ' mg'"></td>
+      </tr>
+      <!-- 아미노산 -->
+      <tr>
+        <td rowspan="17">아미노산</td>
+        <td>류신</td>
+        <td th:text="${food.leucine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>라이신</td>
+        <td th:text="${food.lysine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>메티오닌</td>
+        <td th:text="${food.methionine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>페닐알라닌</td>
+        <td th:text="${food.phenylalanine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>트레오닌</td>
+        <td th:text="${food.threonine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>이소류신</td>
+        <td th:text="${food.isoleucine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>발린</td>
+        <td th:text="${food.valine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>히스티딘</td>
+        <td th:text="${food.histidine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>아르기닌</td>
+        <td th:text="${food.arginine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>티로신</td>
+        <td th:text="${food.tyrosine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>시스테인</td>
+        <td th:text="${food.cysteine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>알라닌</td>
+        <td th:text="${food.alanine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>아스파르트산</td>
+        <td th:text="${food.aspartic_acid_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>글루탐산</td>
+        <td th:text="${food.glutamic_acid_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>글리신</td>
+        <td th:text="${food.glycine_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>프롤린</td>
+        <td th:text="${food.proline_mg} + ' mg'"></td>
+      </tr>
+      <tr>
+        <td>세린</td>
+        <td th:text="${food.serine_mg} + ' mg'"></td>
+      </tr>
+      <!-- 기타 -->
+      <tr>
+        <td rowspan="1">기타</td>
+        <td>카페인</td>
+        <td th:text="${food.caffeine_mg} + ' mg'"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

@@ -28,5 +28,9 @@
     </where>
   </select>
 
+  <select id="getFood" parameterType="com.springboot.healthypath.food.FoodVO" resultType="com.springboot.healthypath.food.FoodVO">
+    SELECT * FROM foods WHERE idx = #{idx}
+  </select>
+
 </mapper>
 

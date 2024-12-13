@@ -64,6 +64,7 @@
   </div>
   <br /><br />
 
+  <div align=center> 
   <h1>찾아보기</h1>
 
   <form th:action="@{/}" method="get">
@@ -74,8 +75,8 @@
     <input type="text" name="search_value" th:value="${original_search_value}">
     <button type="submit">검색</button>
   </form>
-
-  <table>
+</div>
+  <table align=center width=500px>
     <thead>
       <tr>
         <th>식품명</th>
@@ -92,7 +93,10 @@
         <td colspan="5">검색 결과가 없습니다.</td>
       </tr>
       <tr th:each="food : ${foods}">
-        <td th:text="${food.food_name}"></td>
+        <td>
+          <a th:href="@{'/food/getFood/' + ${food.idx}}"
+            th:text="${food.food_name}"></a>
+        </td>
         <td th:text="${food.major_category_name}"></td>
         <td th:text="${food.energy_kcal}"></td>
         <td th:if="${search_type == 'nutrient'}" th:text="${food.nutrient_reference_amount}"></td>

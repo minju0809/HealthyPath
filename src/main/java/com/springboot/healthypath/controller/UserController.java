@@ -225,15 +225,6 @@ public class UserController {
     }
   }
 
-
-  @GetMapping("/")
-  public String getAllUsers(Model model) {
-    List<UserVO> users = userService.getAllUsers();
-    model.addAttribute("users", users);
-
-    return "index";
-  }
-
   public void calculateBmiAndBmr(UserVO user) {
     // BMI 계산
     double heightInMeters = user.getHeight() / 100.0; // cm -> m

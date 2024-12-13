@@ -17,7 +17,7 @@ public class FoodController {
   @Autowired
   private NutrientService nutrientService;
 
-  @GetMapping("/food/getFoods")
+  @GetMapping("/")
   public String getFoods(FoodVO vo,
       Model model) {
     if (vo.getPage() == 0) {
@@ -63,6 +63,6 @@ public class FoodController {
     model.addAttribute("start_page", result.get("start_page"));
     model.addAttribute("end_page", result.get("end_page"));
 
-    return "food/getFoods";
+    return "index";
   }
 }

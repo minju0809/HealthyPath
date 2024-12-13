@@ -1,7 +1,6 @@
 import pandas as pd  # type: ignore
 import pymysql  # type: ignore
 import time
-from datetime import datetime
 
 connection = pymysql.connect(
     host='localhost',   # Update with your host
@@ -117,7 +116,7 @@ if __name__ == "__main__":
     if result["result"] == "success":
         print("Python 실행 성공!")
         df = result["df"]  # 데이터프레임 가져오기
-        insert_data(df)
+        # insert_data(df)
     else:
         print("Python 실행 실패!")
 

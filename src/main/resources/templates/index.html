@@ -208,11 +208,6 @@
       // 팝업 표시 함수
       function showPopup(step) {
         const stepData = menuData[step];
-        if (!stepData) {
-          alert("선택이 완료되었습니다!");
-          $("#popup").hide();
-          return;
-        }
 
         $("#popupTitle").text(stepData.title);
         const optionsHtml = stepData.options.map(option => `
@@ -223,7 +218,9 @@
 
         $(".option").click(function () {
           const selectedOption = $(this).data("option");
-          // alert(`${selectedOption}를 선택하셨습니다.`);
+          if (!stepData.next || Object.keys(stepData.next).length === 0) {
+            alert(`${selectedOption}를 선택하셨습니다.`);
+          }
 
           // 다음 단계로 이동 (없는 경우 멈춤)
           currentStep = stepData.next?.[selectedOption];

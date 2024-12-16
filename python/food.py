@@ -110,6 +110,17 @@ def insert_data(df, batch_size=1000, delay=2):
         print(f"Inserted rows {start_row + 1} to {end_row}")
         time.sleep(delay)
 
+# major_category_name 출력 함수
+def print_major_category_names(df):
+    try:
+        if 'major_category_name' in df.columns:
+            print("Major Category Names (Unique):")
+            print(df['major_category_name'].drop_duplicates().to_string(index=False))
+        else:
+            print("Error: 'major_category_name' column not found in the DataFrame.")
+    except Exception as e:
+        print(f"Error while printing major_category_name: {e}")
+
 # 메인 실행 함수
 if __name__ == "__main__":
     result = process_excel()  # 엑셀 파일을 처리
@@ -117,6 +128,30 @@ if __name__ == "__main__":
         print("Python 실행 성공!")
         df = result["df"]  # 데이터프레임 가져오기
         # insert_data(df)
+        print_major_category_names(df)
+        # 밥류 
+        # 빵 및 과자류 
+        # 면 및 만두류 
+        # 죽 및 스프류 
+        # 국 및 탕류 
+        # 찌개 및 전골류 
+        # 찜류 
+        # 구이류 
+        # 전·적 및 부침류 
+        # 볶음류 
+        # 조림류 
+        # 튀김류 
+        # 나물·숙채류 
+        # 생채·무침류 
+        # 김치류 
+        # 젓갈류 
+        # 장아찌·절임류 
+        # 음료 및 차류 
+        # 수·조·어·육류 
+        # 장류, 양념류 
+        # 유제품류 및 빙과류 
+        # 과일류 
+        # 두류, 견과 및 종실류 곡류, 서류 제품
     else:
         print("Python 실행 실패!")
 

@@ -11,15 +11,16 @@
       const height = parseFloat(document.getElementById('height').value) || 0;
       const age = parseInt(document.getElementById('age').value) || 0;
       const gender = document.getElementById('gender').value;
-
+      const activityLevel = parseFloat(document.getElementById('activity_level').value) || 1.2; // Default activity level
+  
       if (height > 0 && weight > 0) {
         // BMI 계산
         const heightInMeters = height / 100.0;
         const bmi = weight / (heightInMeters * heightInMeters);
         const roundedBmi = Math.round(bmi * 100.0) / 100.0;
-
+  
         document.getElementById('bmi').value = roundedBmi;
-
+  
         // 분류 계산
         let classification = "";
         if (bmi < 18.5) {
@@ -32,7 +33,7 @@
           classification = "비만";
         }
         document.getElementById('classification').value = classification;
-
+  
         // BMR 계산
         let bmr = 0;
         if (gender === "남성") {
@@ -41,7 +42,25 @@
           bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
         }
         document.getElementById('bmr').value = Math.round(bmr * 100.0) / 100.0;
+  
+        // TDEE 계산
+        const tdee = bmr * activityLevel;
+        document.getElementById('tdee').value = Math.round(tdee * 100.0) / 100.0;
+  
+        // Recommended Nutrients (Carbs, Protein, Fats) 계산
+        const recommendedCarbs = (tdee * 0.5) / 4; // 50% of TDEE from carbs (1g carbs = 4 kcal)
+        const recommendedProtein = (tdee * 0.3) / 4; // 30% of TDEE from protein (1g protein = 4 kcal)
+        const recommendedFats = (tdee * 0.2) / 9;   // 20% of TDEE from fats (1g fat = 9 kcal)
+  
+        document.getElementById('recommended_carbs').value = Math.round(recommendedCarbs);
+        document.getElementById('recommended_protein').value = Math.round(recommendedProtein);
+        document.getElementById('recommended_fats').value = Math.round(recommendedFats);
       }
+    }
+
+    function showSuccessMessage() {
+      alert("수정이 완료되었습니다.");
+      return true; // 폼 제출을 계속 진행
     }
   </script>
 </head>
@@ -51,7 +70,7 @@
 
   <h1>My Page <a href="/user/getBmiRecords" style="float: right; font-size: 16px; margin-right: 16px;">몸무게차트</a></h1>
 
-  <form th:action="@{/updateUser}" method="post">
+  <form th:action="@{/updateUser}" method="post" onsubmit="return showSuccessMessage()">
     <table border="1">
       <tr>
         <th>User ID</th>
@@ -102,8 +121,46 @@
         <td><input type="text" id="bmr" name="bmr" th:value="${user.bmr}" readonly></td>
       </tr>
       <tr>
+        <th>Activity Level</th>
+        <td>
+          <select id="activity_level" name="activity_level" onchange="calculateValues()">
+            <option value="1.2" th:selected="${user.activity_level == '1.2'}">운동하지 않음 (좌식 생활)</option>
+            <option value="1.375" th:selected="${user.activity_level == '1.375'}">가벼운 운동 주 1~3일</option>
+            <option value="1.55" th:selected="${user.activity_level == '1.55'}">보통 운동 주 3~5일</option>
+            <option value="1.725" th:selected="${user.activity_level == '1.725'}">강도 높은 운동 주 6~7일</option>
+            <option value="1.9" th:selected="${user.activity_level == '1.9'}">매우 강도 높은 운동 (운동선수 등)</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>TDEE</th>
+        <td><input type="text" id="tdee" name="tdee" th:value="${user.tdee}" readonly></td>
+      </tr>
+      <tr>
+        <th>Recommended Carbs (g)</th>
+        <td><input type="text" id="recommended_carbs" name="recommended_carbs" th:value="${user.recommended_carbs}" readonly></td>
+      </tr>
+      <tr>
+        <th>Recommended Protein (g)</th>
+        <td><input type="text" id="recommended_protein" name="recommended_protein" th:value="${user.recommended_protein}" readonly></td>
+      </tr>
+      <tr>
+        <th>Recommended Fats (g)</th>
+        <td><input type="text" id="recommended_fats" name="recommended_fats" th:value="${user.recommended_fats}" readonly></td>
+      </tr>
+      <tr>
         <th>GOAL</th>
         <td><input type="text" name="goal" th:value="${user.goal}"></td>
+      </tr>
+      <tr>
+        <td><label for="dietary_goal">식단목표</label></td>
+        <td>
+          <select id="dietary_goal" name="dietary_goal" required>
+            <option value="체중감량" th:selected="${user.dietary_goal == '체중감량'}">체중감량</option>
+            <option value="유지" th:selected="${user.dietary_goal == '유지'}">유지</option>
+            <option value="근육증가" th:selected="${user.dietary_goal == '근육증가'}">근육증가</option>
+          </select>
+        </td>
       </tr>
       <tr>
         <th>EXCLUDED_FOODS</th>

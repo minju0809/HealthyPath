@@ -31,7 +31,13 @@
         bmi = #{bmi},
         classification = #{classification},
         bmr = #{bmr},
+        tdee = #{tdee},
+        activity_level = #{activity_level},
+        recommended_carbs = #{recommended_carbs},
+        recommended_protein = #{recommended_protein},
+        recommended_fats = #{recommended_fats},
         goal = #{goal},
+        dietary_goal = #{dietary_goal},
         excluded_foods = #{excluded_foods},
         updated_at = CURRENT_TIMESTAMP
       WHERE email = #{email}

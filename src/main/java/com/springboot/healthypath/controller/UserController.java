@@ -135,17 +135,23 @@ public class UserController {
       sessionUser.setGender(vo.getGender());
       sessionUser.setWeight(vo.getWeight());
       sessionUser.setHeight(vo.getHeight());
-
-      calculateBmiAndBmr(sessionUser);
-
+      sessionUser.setBmi(Math.round(vo.getBmi() * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
+      sessionUser.setClassification(vo.getClassification());
+      sessionUser.setBmr(Math.round(vo.getBmr() * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
+      sessionUser.setTdee(Math.round(vo.getTdee() * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
+      sessionUser.setActivity_level(vo.getActivity_level());
+      sessionUser.setRecommended_carbs(Math.round(vo.getRecommended_carbs() * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
+      sessionUser.setRecommended_protein(Math.round(vo.getRecommended_protein() * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
+      sessionUser.setRecommended_fats(Math.round(vo.getRecommended_fats() * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
       sessionUser.setGoal(vo.getGoal());
+      sessionUser.setDietary_goal(vo.getDietary_goal());
       sessionUser.setExcluded_foods(vo.getExcluded_foods());
 
       // 사용자 정보를 데이터베이스에 저장하는 로직 추가
       userService.updateUser(sessionUser);
     } 
 
-    return "redirect:/"; // 메인 페이지로 리다이렉트
+    return "redirect:/user/getUser"; // 메인 페이지로 리다이렉트
   }
 
   @GetMapping("/logout")
@@ -205,12 +211,10 @@ public class UserController {
 
     if (sessionUser != null) {
       UserVO user = userService.getUser(sessionUser);
-
-      user.setWeight(vo.getWeight());
-
-      calculateBmiAndBmr(user);
-  
       vo.setUser_id(user.getUser_id());
+      
+      calculateBmiAndBmr(user);
+
       vo.setBmi(user.getBmi());
       vo.setClassification(user.getClassification());
       vo.setBmr(user.getBmr());

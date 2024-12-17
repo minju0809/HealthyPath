@@ -28,6 +28,7 @@
     </where>
   </select>
 
+  <!-- 상세 영양성분 보기 -->
   <select id="getFood" parameterType="com.springboot.healthypath.food.FoodVO" resultType="com.springboot.healthypath.food.FoodVO">
     SELECT * FROM foods WHERE idx = #{idx}
   </select>
@@ -67,6 +68,16 @@
       </if>
     </where>
   </select>
+
+  <!-- 상세 레시피 보기 -->
+  <select id="getRecipe" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
+    SELECT * FROM recipes WHERE rcp_sno = #{rcp_sno}
+  </select>
+
+  <!-- 조회수 증가 -->
+  <update id="incrementViewCount" parameterType="com.springboot.healthypath.food.RecipeVO">
+    UPDATE recipes SET inq_cnt = inq_cnt + 1 WHERE rcp_sno = #{rcp_sno}
+  </update>
 
 </mapper>
 

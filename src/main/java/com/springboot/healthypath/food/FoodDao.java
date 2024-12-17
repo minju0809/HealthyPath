@@ -14,4 +14,6 @@ public interface FoodDao {
 
   List<RecipeVO> getRecipes(RecipeVO vo);
   int getTotalCount(RecipeVO vo);
+  RecipeVO getRecipe(RecipeVO vo);
+  void incrementViewCount(RecipeVO vo);
 }

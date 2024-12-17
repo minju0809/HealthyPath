@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe</title>
+</head>
+
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+  
+  <h1>요리소개</h1>
+  <table align="center" width="800px" border="1" style="text-align: center; border-collapse: collapse;">
+    <tr>
+        <th>일련번호</th>
+        <th colspan="2" style="font-size: 20px;">요리명</th>
+        <th>조회수</th>
+        <th>추천수</th>
+        <th>스크랩수</th>
+    </tr>
+    <tr>
+        <td th:text="${recipe.rcp_sno}"></td>
+        <td colspan="2" th:text="${recipe.ckg_nm}" style="font-weight: bold;"></td>
+        <td th:text="${recipe.inq_cnt}"></td>
+        <td th:text="${recipe.rcmm_cnt}"></td>
+        <td th:text="${recipe.srap_cnt}"></td>
+    </tr>
+    <tr>
+        <th>제목</th>
+        <td colspan="5" th:text="${recipe.rcp_ttl}"></td>
+    </tr>
+    <tr>
+        <th>등록자 ID</th>
+        <td th:text="${recipe.rgtr_id}"></td>
+        <th>등록자명</th>
+        <td th:text="${recipe.rgtr_nm}"></td>
+        <th>최초등록일시</th>
+        <td th:text="${recipe.first_reg_dt}"></td>
+    </tr>
+    <tr>
+        <th>요리난이도명</th>
+        <td th:text="${recipe.ckg_dodf_nm}"></td>
+        <th>요리시간명</th>
+        <td th:text="${recipe.ckg_time_nm}"></td>
+        <th>요리인분명</th>
+        <td th:text="${recipe.ckg_inbun_nm}"></td>
+    </tr>
+    <tr>
+        <th>요리방법별명</th>
+        <td th:text="${recipe.ckg_mth_acto_nm}"></td>
+        <th>요리상황별명</th>
+        <td th:text="${recipe.ckg_sta_acto_nm}"></td>
+        <th>요리종류별명</th>
+        <td th:text="${recipe.ckg_knd_acto_nm}"></td>
+    </tr>
+    <tr>
+        <th>요리재료</th>
+        <td colspan="5" th:text="${recipe.ckg_mtrl_cn}"></td>
+    </tr>
+    <tr>
+        <th>요리소개</th>
+        <td colspan="5" th:text="${recipe.ckg_ipdc}"></td>
+    </tr>
+  </table>
+
+
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

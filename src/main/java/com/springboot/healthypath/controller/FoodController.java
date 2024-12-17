@@ -70,7 +70,6 @@ public class FoodController {
   @GetMapping("/food/getFood/{idx}")
   public String getFood(FoodVO vo, Model model) {
     model.addAttribute("food", foodService.getFood(vo));
-    System.out.println("foodService.getFood(vo): " + foodService.getFood(vo));
 
     return "food/getFood";
   }
@@ -104,5 +103,13 @@ public class FoodController {
     model.addAttribute("total_count", result.get("total_count"));
 
     return "food/getRecipes";
+  }
+
+  @GetMapping("/food/getRecipe/{rcp_sno}")
+  public String getRecipe(RecipeVO vo, Model model) {
+    foodService.incrementViewCount(vo);
+    model.addAttribute("recipe", foodService.getRecipe(vo));
+
+    return "food/getRecipe";
   }
 }

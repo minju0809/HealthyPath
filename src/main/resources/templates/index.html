@@ -65,17 +65,17 @@
   <br /><br />
 
   <div align=center> 
-  <h1>영양성분 찾아보기</h1>
+    <h1>영양성분 찾아보기</h1>
 
-  <form th:action="@{/}" method="get">
-    <select name="search_type">
-      <option value="food_name" th:selected="${search_type == 'food_name'}">식품명</option>
-      <option value="nutrient" th:selected="${search_type == 'nutrient'}">영양성분</option>
-    </select>
-    <input type="text" name="search_value" th:value="${original_search_value}">
-    <button type="submit">검색</button>
-  </form>
-</div>
+    <form th:action="@{/}" method="get">
+      <select name="search_type">
+        <option value="food_name" th:selected="${search_type == 'food_name'}">식품명</option>
+        <option value="nutrient" th:selected="${search_type == 'nutrient'}">영양성분</option>
+      </select>
+      <input type="text" name="search_value" th:value="${original_search_value}">
+      <button type="submit">검색</button>
+    </form>
+  </div>
   <table align=center width=500px>
     <thead>
       <tr>

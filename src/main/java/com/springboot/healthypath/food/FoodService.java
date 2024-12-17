@@ -73,4 +73,13 @@ public class FoodService {
 
     return result;
   }
+
+  public RecipeVO getRecipe(RecipeVO vo) {
+
+    return foodDao.getRecipe(vo);
+  }
+
+  public void incrementViewCount(RecipeVO vo) {
+    foodDao.incrementViewCount(vo);
+  }
 }

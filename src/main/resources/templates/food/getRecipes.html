@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipes</title>
+  <style>
+    /* 페이지네이션 및 기본 스타일 */
+    a { text-decoration: none; color: blue; margin: 0 5px; }
+    a.disabled { pointer-events: none; color: gray; }
+    a.active { font-weight: bold; text-decoration: underline; color: darkblue; }
+    div.pagination { display: flex; justify-content: center; align-items: center; margin-top: 20px; }
+    div.pagination a { padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; }
+    div.pagination a:not(.disabled):hover { background-color: #f0f0f0; }
+  </style>
+</head>
+
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+
+  <h3>먹고 싶은 음식을 선택하세요</h3>
+
+  <!-- 검색 폼 -->
+  <form th:action="@{/food/getRecipes}" method="get" style="text-align: center; margin-bottom: 20px;">
+    <h4>레시피 [[${total_count}]]건</h4>
+    <!-- 음식 종류 선택 -->
+    <label for="search_category">음식 종류: </label>
+    <select id="search_category" name="search_category">
+      <option value="">-- 선택하세요 --</option>
+      <option value="국/탕" th:selected="${search_category == '국/탕'}">국/탕</option>
+      <option value="과자" th:selected="${search_category == '과자'}">과자</option>
+      <option value="기타" th:selected="${search_category == '기타'}">기타</option>
+      <option value="김치/젓갈/장류" th:selected="${search_category == '김치/젓갈/장류'}">김치/젓갈/장류</option>
+      <option value="디저트" th:selected="${search_category == '디저트'}">디저트</option>
+      <option value="메인반찬" th:selected="${search_category == '메인반찬'}">메인반찬</option>
+      <option value="면/만두" th:selected="${search_category == '면/만두'}">면/만두</option>
+      <option value="밑반찬" th:selected="${search_category == '밑반찬'}">밑반찬</option>
+      <option value="밥/죽/떡" th:selected="${search_category == '밥/죽/떡'}">밥/죽/떡</option>
+      <option value="빵" th:selected="${search_category == '빵'}">빵</option>
+      <option value="샐러드" th:selected="${search_category == '샐러드'}">샐러드</option>
+      <option value="스프" th:selected="${search_category == '스프'}">스프</option>
+      <option value="양념/소스/잼" th:selected="${search_category == '양념/소스/잼'}">양념/소스/잼</option>
+      <option value="양식" th:selected="${search_category == '양식'}">양식</option>
+      <option value="찌개" th:selected="${search_category == '찌개'}">찌개</option>
+      <option value="차/음료/술" th:selected="${search_category == '차/음료/술'}">차/음료/술</option>
+      <option value="퓨전" th:selected="${search_category == '퓨전'}">퓨전</option>
+    </select>
+
+    <!-- 포함할 재료 입력 -->
+    <label for="included_foods">포함할 재료: </label>
+    <input type="text" id="included_foods" name="included_foods" th:value="${included_foods != null ? included_foods : ''}" placeholder="예: 돼지고기, 버터">
+    <!-- 제외할 재료 입력 -->
+    <label for="excluded_foods">제외할 재료: </label>
+    <input type="text" id="excluded_foods" name="excluded_foods" th:value="${excluded_foods != null ? excluded_foods : ''}" placeholder="예: 돼지고기, 버터">
+
+    <button type="submit">검색</button>
+  </form>
+
+  <!-- 레시피 결과 -->
+  <table align="center" width="600px" border="1" style="text-align: center; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>레시피 이름</th>
+        <th>스크랩 수</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:if="${#lists.isEmpty(recipes)}">
+        <td colspan="1">검색 결과가 없습니다.</td>
+      </tr>
+      <tr th:each="recipe : ${recipes}">
+        <td>
+          <a th:href="@{'/food/getRecipe/' + ${recipe.rcp_sno}}" th:text="${recipe.ckg_nm}">레시피 이름</a>
+        </td>
+        <td th:text="${recipe.srap_cnt}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" th:if="${total_pages > 1}">
+    <a th:href="@{/food/getRecipes(page=1, search_category=${search_category}, included_foods=${included_foods}, excluded_foods=${excluded_foods})}"
+      th:classappend="${current_page == 1} ? 'disabled'">처음</a>
+
+    <a th:href="@{/food/getRecipes(page=${current_page - 1}, search_category=${search_category}, included_foods=${included_foods}, excluded_foods=${excluded_foods})}"
+      th:classappend="${current_page == 1} ? 'disabled'">이전</a>
+
+    <th:block th:with="start_page=${(current_page - 1) / 10 * 10 + 1}, end_page=${(start_page + 9 > total_pages ? total_pages : start_page + 9)}">
+      <th:block th:each="page_num : ${#numbers.sequence(start_page, end_page)}">
+        <a th:href="@{/food/getRecipes(page=${page_num}, search_category=${search_category}, included_foods=${included_foods}, excluded_foods=${excluded_foods})}"
+          th:text="${page_num}"
+          th:classappend="${current_page == page_num ? 'active' : ''}"></a>
+      </th:block>
+    </th:block>
+
+    <a th:href="@{/food/getRecipes(page=${current_page + 1}, search_category=${search_category}, included_foods=${included_foods}, excluded_foods=${excluded_foods})}"
+      th:classappend="${current_page == total_pages} ? 'disabled'">다음</a>
+
+    <a th:href="@{/food/getRecipes(page=${total_pages}, search_category=${search_category}, included_foods=${included_foods}, excluded_foods=${excluded_foods})}"
+      th:classappend="${current_page == total_pages} ? 'disabled'">마지막</a>
+  </div>
+
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

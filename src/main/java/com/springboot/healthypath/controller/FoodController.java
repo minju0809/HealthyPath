@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.springboot.healthypath.food.FoodService;
 import com.springboot.healthypath.food.FoodVO;
 import com.springboot.healthypath.food.NutrientService;
+import com.springboot.healthypath.food.RecipeVO;
 
 
 @Controller
@@ -72,5 +73,36 @@ public class FoodController {
     System.out.println("foodService.getFood(vo): " + foodService.getFood(vo));
 
     return "food/getFood";
+  }
+
+  @GetMapping("/food/getRecipes")
+  public String getRecipes(RecipeVO vo, Model model) {
+    int page_size = 10;
+    
+    if (vo.getPage() == 0) {
+      vo.setPage(1);
+    }
+
+    vo.setLimit(page_size);
+    vo.setOffset((vo.getPage() - 1) * page_size);
+
+    var result = foodService.getRecipes(vo);
+
+    int current_page = vo.getPage();
+    int total_pages = (int) result.get("total_pages"); // 전체 페이지 수
+    int start_page = Math.max(1, current_page - 2); // 시작 페이지 (5개씩 표시 예시)
+    int end_page = Math.min(total_pages, current_page + 2); // 끝 페이지
+
+    model.addAttribute("recipes", result.get("recipes"));
+    model.addAttribute("current_page", current_page);
+    model.addAttribute("total_pages", total_pages);
+    model.addAttribute("start_page", start_page);
+    model.addAttribute("end_page", end_page);
+    model.addAttribute("search_category", vo.getSearch_category());
+    model.addAttribute("included_foods", vo.getIncluded_foods());
+    model.addAttribute("excluded_foods", vo.getExcluded_foods());
+    model.addAttribute("total_count", result.get("total_count"));
+
+    return "food/getRecipes";
   }
 }

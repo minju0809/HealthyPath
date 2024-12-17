@@ -51,7 +51,26 @@ public class FoodService {
   }
 
   public FoodVO getFood(FoodVO vo) {
-    
+
     return foodDao.getFood(vo);
+  }
+
+  public Map<String, Object> getRecipes(RecipeVO vo) {
+    Map<String, Object> result = new HashMap<>();
+
+    // 전체 레시피 수 조회
+    int total_count = foodDao.getTotalCount(vo); 
+    int total_pages = (int) Math.ceil((double) total_count / vo.getLimit());
+
+    // 레시피 목록 조회
+    List<RecipeVO> recipes = foodDao.getRecipes(vo);
+
+    result.put("recipes", recipes);
+    result.put("total_pages", total_pages);
+    result.put("start_page", Math.max(1, vo.getPage() - 2));
+    result.put("end_page", Math.min(total_pages, vo.getPage() + 2));
+    result.put("total_count", total_count);
+
+    return result;
   }
 }

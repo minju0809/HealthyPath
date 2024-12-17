@@ -11,4 +11,7 @@ public interface FoodDao {
   List<FoodVO> searchFoodByNutrient(Map<String, Object> params);
   int countTotalRecords(Map<String, Object> params);
   FoodVO getFood(FoodVO vo);
+
+  List<RecipeVO> getRecipes(RecipeVO vo);
+  int getTotalCount(RecipeVO vo);
 }

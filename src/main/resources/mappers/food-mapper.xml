@@ -32,5 +32,41 @@
     SELECT * FROM foods WHERE idx = #{idx}
   </select>
 
+  <!-- 레시피 조회 -->
+  <select id="getRecipes" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
+    SELECT *
+    FROM recipes
+    <where>
+      <if test="search_category != null and !search_category.isEmpty()">
+        AND ckg_knd_acto_nm = #{search_category}
+      </if>
+      <if test="included_foods != null and !included_foods.isEmpty()">
+        AND ckg_mtrl_cn LIKE CONCAT('%', #{included_foods}, '%')
+      </if>
+      <if test="excluded_foods != null and !excluded_foods.isEmpty()">
+        AND ckg_mtrl_cn NOT LIKE CONCAT('%', #{excluded_foods}, '%')
+      </if>
+    </where>
+    ORDER BY srap_cnt DESC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
+  <!-- 레시피 총 개수 조회 -->
+  <select id="getTotalCount" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="int">
+    SELECT COUNT(*)
+    FROM recipes
+    <where>
+      <if test="search_category != null and !search_category.isEmpty()">
+        AND ckg_knd_acto_nm = #{search_category}
+      </if>
+      <if test="included_foods != null and !included_foods.isEmpty()">
+        AND ckg_mtrl_cn LIKE CONCAT('%', #{included_foods}, '%')
+      </if>
+      <if test="excluded_foods != null and !excluded_foods.isEmpty()">
+        AND ckg_mtrl_cn NOT LIKE CONCAT('%', #{excluded_foods}, '%')
+      </if>
+    </where>
+  </select>
+
 </mapper>
 

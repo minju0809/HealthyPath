@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class FoodRecommendVO {
+  private int idx;
   private String food_name; // 식품명
   private String major_category_name; // 식품 대분류명
   private double energy_kcal; // 에너지 (kcal)

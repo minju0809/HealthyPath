@@ -39,23 +39,26 @@
         <span th:text="${vo.breakfast_category}">아침 카테고리</span>
         <ul>
             <li th:each="food : ${recommendations['breakfast']}">
-                <span th:text="${food.food_name}">Food Name</span> - <span th:text="${food.energy_kcal}">Calories</span> kcal
+                <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
+                <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
             </li>
         </ul>
-
+        
         <h3>점심</h3>
         <span th:text="${vo.lunch_category}">점심 카테고리</span>
         <ul>
             <li th:each="food : ${recommendations['lunch']}">
-                <span th:text="${food.food_name}">Food Name</span> - <span th:text="${food.energy_kcal}">Calories</span> kcal
+                <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
+                <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
             </li>
         </ul>
-
+        
         <h3>저녁</h3>
         <span th:text="${vo.dinner_category}">저녁 카테고리</span>
         <ul>
             <li th:each="food : ${recommendations['dinner']}">
-                <span th:text="${food.food_name}">Food Name</span> - <span th:text="${food.energy_kcal}">Calories</span> kcal
+                <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
+                <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
             </li>
         </ul>
     </div>

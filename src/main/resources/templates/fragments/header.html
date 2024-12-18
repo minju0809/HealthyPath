@@ -13,6 +13,7 @@
       </div>
       <div th:if="${session.user != null}" style="text-align: right;">
         <span th:text="'환영합니다, ' + ${session.user.name} + '님!'" style="margin-right: 10px; font-size: 14px;"></span>
+        <a href="/food/recommendForm" class="btn" style="margin-left: 10px;">음식추천</a>
         <a href="/user/getUser" class="btn" style="margin-left: 10px;">마이페이지</a>
         <a href="/logout" class="btn" style="margin-left: 10px;">로그아웃</a>
       </div>

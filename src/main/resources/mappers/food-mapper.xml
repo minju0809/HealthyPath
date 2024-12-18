@@ -33,6 +33,16 @@
     SELECT * FROM foods WHERE idx = #{idx}
   </select>
 
+  <select id="getFoodsByCategoryAndCalories" parameterType="com.springboot.healthypath.food.FoodRecommendVO" resultType="com.springboot.healthypath.food.FoodRecommendVO">
+    SELECT major_category_name, food_name, energy_kcal 
+    FROM foods
+    WHERE major_category_name = #{category} 
+    AND energy_kcal &lt;= #{calories}
+    ORDER BY RAND() 
+    LIMIT 3
+  </select>
+
+
   <!-- 레시피 조회 -->
   <select id="getRecipes" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
     SELECT *

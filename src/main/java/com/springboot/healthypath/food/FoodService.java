@@ -55,6 +55,15 @@ public class FoodService {
     return foodDao.getFood(vo);
   }
 
+  public Map<String, List<FoodRecommendVO>> getFoodsByCategoryAndCalories(FoodRecommendVO vo) {
+    Map<String, List<FoodRecommendVO>> recommendations = new HashMap<>();
+    recommendations.put("breakfast", foodDao.getFoodsByCategoryAndCalories(vo.getBreakfast_category(), vo.getDaily_calories() * 0.3));
+    recommendations.put("lunch", foodDao.getFoodsByCategoryAndCalories(vo.getLunch_category(), vo.getDaily_calories() * 0.4));
+    recommendations.put("dinner", foodDao.getFoodsByCategoryAndCalories(vo.getDinner_category(), vo.getDaily_calories() * 0.3));
+
+    return recommendations;
+  }
+
   public Map<String, Object> getRecipes(RecipeVO vo) {
     Map<String, Object> result = new HashMap<>();
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>음식 추천</title>
+</head>
+<body>
+    <div th:insert="~{fragments/header :: header}"></div>
+
+    <h1>음식 추천</h1>
+    
+    <form action="/food/recommendations" method="get" th:action="@{/food/recommendations}" th:object="${vo}">
+        <label for="daily_calories">원하는 섭취 칼로리량 (kcal): </label>
+        <input type="number" id="daily_calories" th:field="*{daily_calories}" required><br><br>
+    
+        <label for="breakfast_category">아침 음식 카테고리:</label>
+        <select id="breakfast_category" th:field="*{breakfast_category}" required>
+            <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"
+                    th:selected="${category == vo.breakfast_category}"></option>
+        </select><br><br>
+    
+        <label for="lunch_category">점심 음식 카테고리:</label>
+        <select id="lunch_category" th:field="*{lunch_category}" required>
+            <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"
+                    th:selected="${category == vo.lunch_category}"></option>
+        </select><br><br>
+    
+        <label for="dinner_category">저녁 음식 카테고리:</label>
+        <select id="dinner_category" th:field="*{dinner_category}" required>
+            <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"
+                    th:selected="${category == vo.dinner_category}"></option>
+        </select><br><br>
+    
+        <button type="submit">추천 받기</button>
+    </form>
+
+    <h2>추천 메뉴</h2>
+    <div th:if="${recommendations != null}">
+        <h3>아침</h3>
+        <span th:text="${vo.breakfast_category}">아침 카테고리</span>
+        <ul>
+            <li th:each="food : ${recommendations['breakfast']}">
+                <span th:text="${food.food_name}">Food Name</span> - <span th:text="${food.energy_kcal}">Calories</span> kcal
+            </li>
+        </ul>
+
+        <h3>점심</h3>
+        <span th:text="${vo.lunch_category}">점심 카테고리</span>
+        <ul>
+            <li th:each="food : ${recommendations['lunch']}">
+                <span th:text="${food.food_name}">Food Name</span> - <span th:text="${food.energy_kcal}">Calories</span> kcal
+            </li>
+        </ul>
+
+        <h3>저녁</h3>
+        <span th:text="${vo.dinner_category}">저녁 카테고리</span>
+        <ul>
+            <li th:each="food : ${recommendations['dinner']}">
+                <span th:text="${food.food_name}">Food Name</span> - <span th:text="${food.energy_kcal}">Calories</span> kcal
+            </li>
+        </ul>
+    </div>
+
+    <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

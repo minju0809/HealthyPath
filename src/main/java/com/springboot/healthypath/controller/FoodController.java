@@ -1,14 +1,19 @@
 package com.springboot.healthypath.controller;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springboot.healthypath.food.FoodRecommendVO;
 import com.springboot.healthypath.food.FoodService;
@@ -118,22 +123,29 @@ public class FoodController {
 
       return "redirect:/";
     }
-
   }
 
-  @GetMapping("/food/insertFoodRecommendation")
-  public String insertFoodRecommendation(HttpSession session, FoodRecommendVO vo) {
+  @PostMapping("/food/insertFoodRecommendation")
+  @ResponseBody
+  public ResponseEntity<?> insertFoodRecommendation(HttpSession session, FoodRecommendVO vo, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
 
     if (sessionUser != null) {
+      vo.setUser_id(sessionUser.getUser_id());
 
-      vo.setUser_id(sessionUser.getUser_id()); // 세션에서 email 설정
+      List<FoodRecommendVO> li = foodService.getFoodRecommendations(sessionUser);
+      for (FoodRecommendVO food : li) {
+        if (food.getIdx() == vo.getIdx()) {
+
+          return ResponseEntity.ok(Collections.singletonMap("message", "이미 저장되어 있는 음식입니다. 저장한 음식 페이지로 이동하시겠습니까?"));
+        }
+      }
       foodService.insertFoodRecommendation(vo);
 
-      return "food/recommendForm";
+      return ResponseEntity.ok(Collections.singletonMap("message", "음식이 저장되었습니다. 저장한 음식 페이지로 이동하시겠습니까?"));
     } else {
 
-      return "redirect:/";
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "로그인이 필요합니다."));
     }
   }
 

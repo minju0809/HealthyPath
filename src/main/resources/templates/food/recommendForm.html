@@ -34,6 +34,7 @@
     </form>
 
     <h2>추천 메뉴</h2>
+
     <div th:if="${recommendations != null}">
         <h3>아침</h3>
         <span th:text="${vo.breakfast_category}">아침 카테고리</span>
@@ -41,6 +42,13 @@
             <li th:each="food : ${recommendations['breakfast']}">
                 <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
                 <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
+                <form th:action="@{/food/insertFoodRecommendation}" method="post" style="display: inline;" class="recommendation-form">
+                    <input type="hidden" name="idx" th:value="${food.idx}" />
+                    <input type="hidden" name="food_name" th:value="${food.food_name}" />
+                    <input type="hidden" name="major_category_name" th:value="${vo.breakfast_category}" />
+                    <input type="hidden" name="energy_kcal" th:value="${food.energy_kcal}" />
+                    <button type="submit" style="margin-left: 10px;">저장</button>
+                </form>
             </li>
         </ul>
         
@@ -50,6 +58,13 @@
             <li th:each="food : ${recommendations['lunch']}">
                 <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
                 <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
+                <form th:action="@{/food/insertFoodRecommendation}" method="post" style="display: inline;" class="recommendation-form">
+                    <input type="hidden" name="idx" th:value="${food.idx}" />
+                    <input type="hidden" name="food_name" th:value="${food.food_name}" />
+                    <input type="hidden" name="major_category_name" th:value="${vo.lunch_category}" />
+                    <input type="hidden" name="energy_kcal" th:value="${food.energy_kcal}" />
+                    <button type="submit" style="margin-left: 10px;">저장</button>
+                </form>
             </li>
         </ul>
         
@@ -59,10 +74,41 @@
             <li th:each="food : ${recommendations['dinner']}">
                 <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
                 <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
+                <form th:action="@{/food/insertFoodRecommendation}" method="post" style="display: inline;" class="recommendation-form">
+                    <input type="hidden" name="idx" th:value="${food.idx}" />
+                    <input type="hidden" name="food_name" th:value="${food.food_name}" />
+                    <input type="hidden" name="major_category_name" th:value="${vo.dinner_category}" />
+                    <input type="hidden" name="energy_kcal" th:value="${food.energy_kcal}" />
+                    <button type="submit" style="margin-left: 10px;">저장</button>
+                </form>
             </li>
         </ul>
     </div>
-
+        
     <div th:insert="~{fragments/footer :: footer}"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.recommendation-form').on('submit', function(event) {
+                event.preventDefault(); 
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(), // 폼 데이터를 URL 인코딩 형식으로 변환하여 서버로 전송
+                    success: function(response) {
+                        if (confirm(response.message)) {
+                            window.location.href = "http://localhost:8080/food/getFoodRecommendations";
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : '저장 중 오류가 발생했습니다.';
+                        alert(errorMessage); 
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

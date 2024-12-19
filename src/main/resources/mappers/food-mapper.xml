@@ -45,7 +45,7 @@
 
   <!-- 추천 메뉴 저장 -->
   <insert id="insertFoodRecommendation" parameterType="com.springboot.healthypath.food.FoodRecommendVO">
-    INSERT INTO food_recommendations (idx, user_id food_name, major_category_name, energy_kcal)
+    INSERT INTO food_recommendations (idx, user_id, food_name, major_category_name, energy_kcal)
     VALUES (#{idx}, #{user_id}, #{food_name}, #{major_category_name}, #{energy_kcal})
   </insert>
 

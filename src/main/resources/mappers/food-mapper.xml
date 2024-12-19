@@ -43,6 +43,17 @@
     LIMIT 3
   </select>
 
+  <!-- 추천 메뉴 저장 -->
+  <insert id="insertFoodRecommendation" parameterType="com.springboot.healthypath.food.FoodRecommendVO">
+    INSERT INTO food_recommendations (idx, user_id food_name, major_category_name, energy_kcal)
+    VALUES (#{idx}, #{user_id}, #{food_name}, #{major_category_name}, #{energy_kcal})
+  </insert>
+
+  <!-- 저장된 추천 메뉴 보기 -->
+  <select id="getFoodRecommendations" parameterType="com.springboot.healthypath.user.UserVO" resultType="com.springboot.healthypath.food.FoodRecommendVO">
+    SELECT * FROM food_recommendations WHERE user_id = (SELECT user_id FROM users WHERE email = #{email})
+  </select>
+
   <!-- 레시피 조회 -->
   <select id="getRecipes" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
     SELECT *

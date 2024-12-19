@@ -15,7 +15,9 @@ import com.springboot.healthypath.food.FoodService;
 import com.springboot.healthypath.food.FoodVO;
 import com.springboot.healthypath.food.NutrientService;
 import com.springboot.healthypath.food.RecipeVO;
+import com.springboot.healthypath.user.UserVO;
 
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class FoodController {
@@ -85,37 +87,69 @@ public class FoodController {
     model.addAttribute("vo", new FoodRecommendVO());
 
     List<String> categories = Arrays.asList(
-      "밥류", "빵 및 과자류", "면 및 만두류", "죽 및 스프류", "국 및 탕류",
-      "찌개 및 전골류", "찜류", "구이류", "전·적 및 부침류", "볶음류",
-      "조림류", "튀김류", "나물·숙채류", "생채·무침류", "김치류", "젓갈류",
-      "장아찌·절임류", "음료 및 차류", "수·조·어·육류", "장류, 양념류",
-      "유제품류 및 빙과류", "과일류", "두류, 견과 및 종실류");
+        "밥류", "빵 및 과자류", "면 및 만두류", "죽 및 스프류", "국 및 탕류",
+        "찌개 및 전골류", "찜류", "구이류", "전·적 및 부침류", "볶음류",
+        "조림류", "튀김류", "나물·숙채류", "생채·무침류", "김치류", "젓갈류",
+        "장아찌·절임류", "음료 및 차류", "수·조·어·육류", "장류, 양념류",
+        "유제품류 및 빙과류", "과일류", "두류, 견과 및 종실류");
     model.addAttribute("categories", categories);
 
     return "food/recommendForm";
   }
 
   @GetMapping("/food/recommendations")
-  public String recommendations(@ModelAttribute FoodRecommendVO vo, Model model) {
-    Map<String, List<FoodRecommendVO>> recommendations = foodService.getFoodsByCategoryAndCalories(vo);
-    
-    model.addAttribute("recommendations", recommendations);
-    model.addAttribute("vo", vo); // 사용자 입력 값 다시 전달
-    model.addAttribute("categories", Arrays.asList(
-      "밥류", "빵 및 과자류", "면 및 만두류", "죽 및 스프류", "국 및 탕류",
-      "찌개 및 전골류", "찜류", "구이류", "전·적 및 부침류", "볶음류",
-      "조림류", "튀김류", "나물·숙채류", "생채·무침류", "김치류", "젓갈류",
-      "장아찌·절임류", "음료 및 차류", "수·조·어·육류", "장류, 양념류",
-      "유제품류 및 빙과류", "과일류", "두류, 견과 및 종실류"
-  ));
+  public String recommendations(HttpSession session, @ModelAttribute FoodRecommendVO vo, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    return "food/recommendForm";
+    if (sessionUser != null) {
+      Map<String, List<FoodRecommendVO>> recommendations = foodService.getFoodsByCategoryAndCalories(vo);
+
+      model.addAttribute("recommendations", recommendations);
+      model.addAttribute("vo", vo); // 사용자 입력 값 다시 전달
+      model.addAttribute("categories", Arrays.asList(
+          "밥류", "빵 및 과자류", "면 및 만두류", "죽 및 스프류", "국 및 탕류",
+          "찌개 및 전골류", "찜류", "구이류", "전·적 및 부침류", "볶음류",
+          "조림류", "튀김류", "나물·숙채류", "생채·무침류", "김치류", "젓갈류",
+          "장아찌·절임류", "음료 및 차류", "수·조·어·육류", "장류, 양념류",
+          "유제품류 및 빙과류", "과일류", "두류, 견과 및 종실류"));
+
+      return "food/recommendForm";
+    } else {
+
+      return "redirect:/";
+    }
+
+  }
+
+  @GetMapping("/food/insertFoodRecommendation")
+  public String insertFoodRecommendation(HttpSession session, FoodRecommendVO vo) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    if (sessionUser != null) {
+
+      vo.setUser_id(sessionUser.getUser_id()); // 세션에서 email 설정
+      foodService.insertFoodRecommendation(vo);
+
+      return "food/recommendForm";
+    } else {
+
+      return "redirect:/";
+    }
+  }
+
+  @GetMapping("/food/getFoodRecommendations")
+  public String getFoodRecommendations(HttpSession session, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    model.addAttribute("food_recommendations", foodService.getFoodRecommendations(sessionUser));
+
+    return "food/getFoodRecommendations";
   }
 
   @GetMapping("/food/getRecipes")
   public String getRecipes(RecipeVO vo, Model model) {
     int page_size = 10;
-    
+
     if (vo.getPage() == 0) {
       vo.setPage(1);
     }

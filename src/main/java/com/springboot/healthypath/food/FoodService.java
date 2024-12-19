@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.springboot.healthypath.user.UserVO;
+
 @Service
 public class FoodService {
   @Autowired
@@ -62,6 +64,15 @@ public class FoodService {
     recommendations.put("dinner", foodDao.getFoodsByCategoryAndCalories(vo.getDinner_category(), vo.getDaily_calories() * 0.3));
 
     return recommendations;
+  }
+
+  public void insertFoodRecommendation(FoodRecommendVO vo) {
+    foodDao.insertFoodRecommendation(vo);
+  }
+
+  public List<FoodRecommendVO> getFoodRecommendations(UserVO vo) {
+
+    return foodDao.getFoodRecommendations(vo);
   }
 
   public Map<String, Object> getRecipes(RecipeVO vo) {

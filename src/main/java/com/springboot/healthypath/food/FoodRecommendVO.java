@@ -1,9 +1,13 @@
 package com.springboot.healthypath.food;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
 public class FoodRecommendVO {
+  private int recommendation_id;
+  private Long user_id;
   private int idx;
   private String food_name; // 식품명
   private String major_category_name; // 식품 대분류명
@@ -12,4 +16,5 @@ public class FoodRecommendVO {
   private String breakfast_category;
   private String lunch_category;
   private String dinner_category;
+  private Date created_at; 
 }

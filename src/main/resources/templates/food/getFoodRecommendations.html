@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Recommendations</title>
+</head>
+
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+
+  <h1>저장한 음식</h1>
+  <table align="center" width="600px" border="1" style="text-align: center; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>음식 번호</th>
+        <th>유저 번호</th>
+        <th>음식 이름</th>
+        <th>분류</th>
+        <th>에너지</th>
+        <th>저장일</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:if="${#lists.isEmpty(food_recommendations)}">
+        <td colspan="7">검색 결과가 없습니다.</td>
+      </tr>
+      <tr th:each="food : ${food_recommendations}">
+        <td th:text="${food.recommendation_id}"></td>
+        <td th:text="${food.idx}"></td>
+        <td th:text="${food.user_id}"></td>
+        <td>
+          <a th:href="@{'/food/getFood/' + ${food.idx}}"
+            th:text="${food.food_name}"></a>
+        </td>
+        <td th:text="${food.major_category_name}"></td>
+        <td th:text="${food.energy_kcal}"></td>
+        <td th:text="${food.created_at}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

@@ -16,6 +16,7 @@ public interface FoodDao {
   List<FoodRecommendVO> getFoodsByCategoryAndCalories(String category, double calories);
   void insertFoodRecommendation(FoodRecommendVO vo);
   List<FoodRecommendVO> getFoodRecommendations(UserVO vo);
+  void deleteFoodRecommendation(FoodRecommendVO vo);
 
   List<RecipeVO> getRecipes(RecipeVO vo);
   int getTotalCount(RecipeVO vo);

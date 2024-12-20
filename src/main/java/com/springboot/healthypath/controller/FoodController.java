@@ -158,6 +158,13 @@ public class FoodController {
     return "food/getFoodRecommendations";
   }
 
+  @GetMapping("/food/deleteFoodRecommendation/{recommendation_id}")
+  public String deleteFoodRecommendation(FoodRecommendVO vo) {
+    foodService.deleteFoodRecommendation(vo);
+
+    return "redirect:/food/getFoodRecommendations";
+  }
+
   @GetMapping("/food/getRecipes")
   public String getRecipes(RecipeVO vo, Model model) {
     int page_size = 10;

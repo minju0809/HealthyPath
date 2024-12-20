@@ -54,6 +54,10 @@
     SELECT * FROM food_recommendations WHERE user_id = (SELECT user_id FROM users WHERE email = #{email})
   </select>
 
+  <delete id="deleteFoodRecommendation" parameterType="com.springboot.healthypath.food.FoodRecommendVO">
+    DELETE FROM food_recommendations WHERE recommendation_id = #{recommendation_id}
+  </delete>
+
   <!-- 레시피 조회 -->
   <select id="getRecipes" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
     SELECT *

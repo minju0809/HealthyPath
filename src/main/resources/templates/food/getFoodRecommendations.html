@@ -21,11 +21,12 @@
         <th>분류</th>
         <th>에너지</th>
         <th>저장일</th>
+        <th>삭제</th>
       </tr>
     </thead>
     <tbody>
       <tr th:if="${#lists.isEmpty(food_recommendations)}">
-        <td colspan="7">검색 결과가 없습니다.</td>
+        <td colspan="8">검색 결과가 없습니다.</td>
       </tr>
       <tr th:each="food : ${food_recommendations}">
         <td th:text="${food.recommendation_id}"></td>
@@ -38,6 +39,10 @@
         <td th:text="${food.major_category_name}"></td>
         <td th:text="${food.energy_kcal}"></td>
         <td th:text="${food.created_at}"></td>
+        <td>
+          <a th:href="@{'/food/deleteFoodRecommendation/' + ${food.recommendation_id}}"
+            onclick="return confirm('삭제하시겠습니까?');">삭제</a>
+        </td>
       </tr>
     </tbody>
   </table>

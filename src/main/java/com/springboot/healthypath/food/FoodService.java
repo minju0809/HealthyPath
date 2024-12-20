@@ -75,6 +75,10 @@ public class FoodService {
     return foodDao.getFoodRecommendations(vo);
   }
 
+  public void deleteFoodRecommendation(FoodRecommendVO vo) {
+    foodDao.deleteFoodRecommendation(vo);
+  }
+
   public Map<String, Object> getRecipes(RecipeVO vo) {
     Map<String, Object> result = new HashMap<>();
 

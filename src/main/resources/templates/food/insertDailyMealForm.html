@@ -9,12 +9,10 @@
 
     <h1>식단 기록하기</h1>
 
-    <form th:action="@{/food/insertDailyMeal}" method="post">
-        <!-- 날짜 선택 -->
+    <form th:action="@{/food/insertDailyMeal}" method="post" onsubmit="setDefaultValue()">
         <label for="date">날짜:</label>
-        <input type="date" id="date" name="date" required>
-
-        <!-- 식사 유형 선택 -->
+        <input type="date" id="date" name="date" th:value="${date}" required>
+    
         <label for="meal_type">식사 유형:</label>
         <select id="meal_type" name="meal_time" required>
             <option value="아침">아침</option>
@@ -22,83 +20,92 @@
             <option value="저녁">저녁</option>
             <option value="간식">간식</option>
         </select>
-
-        <!-- 음식 찾기 -->
+    
         <label for="search_food">음식 찾기:</label>
         <input type="text" id="search_food" placeholder="음식 이름 입력">
         <button type="button" onclick="search_foods()">찾기</button>
-
-        <!-- 음식 선택 목록 -->
-        <div id="food_list"></div>
-
-        <!-- 선택된 음식 목록 -->
-        <div id="selected_foods">
-            <h3>선택된 음식</h3>
+    
+        <div id="food_list_container" style="display: none;">
+            <label for="food_list">음식 목록:</label>
+            <select id="food_list" size="10" style="width: 100%; overflow-y: scroll;">
+                <!-- 검색된 음식이 여기 추가됩니다 -->
+            </select>
         </div>
-
-        <!-- 먹은 양 입력 -->
+    
+        <!-- 선택된 음식 데이터 -->
+        <input type="hidden" id="selected_idx" name="idx">
+        <input type="hidden" id="selected_food_name" name="food_name">
+        <input type="hidden" id="selected_major_category_name" name="major_category_name">
+        <input type="hidden" id="selected_energy_kcal" name="energy_kcal">
+    
+        <div id="selected_foods">
+            <br />
+            <!-- 선택한 음식 표시 -->
+        </div>
+    
         <label for="nutrient_reference_amount">먹은 양 (g):</label>
-        <input type="number" id="nutrient_reference_amount" name="nutrient_reference_amount" placeholder="기본값: 100g" required>
-
-        <!-- 등록 버튼 -->
+        <input type="number" id="nutrient_reference_amount" name="nutrient_reference_amount" placeholder="기본값: 100g">
+    
         <button type="submit">등록</button>
     </form>
 
     <div th:insert="~{fragments/footer :: footer}"></div>
 
     <script>
-        search_foods = function () {
+        const search_foods = function () {
             const food_name = document.getElementById('search_food').value;
+            const food_list_container = document.getElementById('food_list_container');
+            const food_list = document.getElementById('food_list');
+    
             fetch(`/food/searchDailyMeal?food_name=${food_name}`)
                 .then(response => response.json())
                 .then(data => {
-                    const food_list_div = document.getElementById('food_list');
-                    food_list_div.innerHTML = '';
-                    data.forEach(food => {
-                        const button = document.createElement('button');
-                        button.textContent = `${food.food_name} (${food.major_category_name}) - ${food.energy_kcal} kcal`;
-                        button.onclick = () => select_food(food.idx, food.food_name, food.major_category_name, food.energy_kcal);
-                        food_list_div.appendChild(button);
-                    });
+                    food_list.innerHTML = ''; // 기존 목록 초기화
+    
+                    if (data.length > 0) {
+                        food_list_container.style.display = 'block';
+    
+                        // 검색된 음식 데이터를 추가
+                        data.forEach(food => {
+                            const option = document.createElement('option');
+                            option.value = food.idx;
+                            option.textContent = `${food.food_name} (${food.major_category_name || '없음'}) - ${food.energy_kcal} kcal`;
+                            option.dataset.food_name = food.food_name;
+                            option.dataset.major_category_name = food.major_category_name || '';
+                            option.dataset.energy_kcal = food.energy_kcal;
+                            food_list.appendChild(option);
+                        });
+                    } else {
+                        food_list_container.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching food data:', error);
                 });
         };
-
-        select_food = function (food_idx, food_name, major_category_name, energy_kcal) {
+    
+        // 음식 선택 시 선택된 값 서버 전송용 hidden input에 설정
+        const food_list = document.getElementById('food_list');
+        food_list.addEventListener('change', function () {
+            const selected_option = food_list.options[food_list.selectedIndex];
+    
+            document.getElementById('selected_idx').value = selected_option.value;
+            document.getElementById('selected_food_name').value = selected_option.dataset.food_name;
+            document.getElementById('selected_major_category_name').value = selected_option.dataset.major_category_name;
+            document.getElementById('selected_energy_kcal').value = selected_option.dataset.energy_kcal;
+    
             const selected_foods_div = document.getElementById('selected_foods');
+            selected_foods_div.innerHTML = `<br /><div>선택한 음식: ${selected_option.textContent}</div><br />`;
 
-            // 선택된 음식 추가
-            const selected_food = document.createElement('div');
-            selected_food.textContent = `${food_name} (${major_category_name}) - ${energy_kcal} kcal`;
+            document.getElementById('food_list_container').style.display = 'none';
+        });
 
-            // Hidden inputs 생성
-            const food_idx_input = document.createElement('input');
-            food_idx_input.type = 'hidden';
-            food_idx_input.name = 'food_idx';
-            food_idx_input.value = food_idx;
-
-            const food_name_input = document.createElement('input');
-            food_name_input.type = 'hidden';
-            food_name_input.name = 'food_name';
-            food_name_input.value = food_name;
-
-            const major_category_name_input = document.createElement('input');
-            major_category_name_input.type = 'hidden';
-            major_category_name_input.name = 'major_category_name';
-            major_category_name_input.value = major_category_name;
-
-            const energy_kcal_input = document.createElement('input');
-            energy_kcal_input.type = 'hidden';
-            energy_kcal_input.name = 'energy_kcal';
-            energy_kcal_input.value = energy_kcal;
-
-            // Hidden inputs를 선택된 음식 div에 추가
-            selected_food.appendChild(food_idx_input);
-            selected_food.appendChild(food_name_input);
-            selected_food.appendChild(major_category_name_input);
-            selected_food.appendChild(energy_kcal_input);
-
-            selected_foods_div.appendChild(selected_food);
-        };
+        function setDefaultValue() {
+            const nutrient_input = document.getElementById('nutrient_reference_amount');
+            if (!nutrient_input.value) {
+                nutrient_input.value = 100;
+            }
+        }
     </script>
 </body>
 </html>

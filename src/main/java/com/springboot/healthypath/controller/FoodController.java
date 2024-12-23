@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springboot.healthypath.food.DailyMealVO;
@@ -178,7 +179,8 @@ public class FoodController {
   }
 
   @GetMapping("/food/insertDailyMealForm")
-  public String insertDailyMealForm(FoodVO vo, Model model) {
+  public String insertDailyMealForm(@RequestParam String date, FoodVO vo, Model model) {
+    model.addAttribute("date", date);
 
     return "food/insertDailyMealForm";
   }
@@ -195,16 +197,25 @@ public class FoodController {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
     if (sessionUser == null) {
       model.addAttribute("error", "사용자 세션이 만료되었습니다.");
+
       return "redirect:/"; 
     }
+
     vo.setUser_id(sessionUser.getUser_id());
-    System.out.println("vo: " + vo);
+
+    float energy_kcal = vo.getEnergy_kcal();  // Get the base kcal from the frontend
+    double nutrient_reference_amount = vo.getNutrient_reference_amount();
+    
+    float calculated_energy =  energy_kcal * (float)(nutrient_reference_amount / 100.0f);
+    
+    vo.setEnergy_kcal(calculated_energy);
 
     try {
       foodService.insertDailyMeal(vo);
     } catch (Exception e) {
       e.printStackTrace();
       model.addAttribute("error", "데이터 삽입 중 오류가 발생했습니다.");
+      
       return "food/errorPage"; 
     }
 

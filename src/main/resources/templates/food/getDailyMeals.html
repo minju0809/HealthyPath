@@ -29,16 +29,17 @@
             padding-left: 1em;    
             padding-right: 1em;  
         }
+
+        .fc-day {
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
     <div th:insert="~{fragments/header :: header}"></div>
 
-    <h1>
-        식단 관리 
-        <a href="/food/insertDailyMealForm" style="float: right; font-size: 16px; margin-right: 16px;">식단 기록하기</a>
-    </h1>
+    <h1>식단 관리</h1>
 
     <!-- calendar 태그 -->  
     <div id='calendar-container'>    
@@ -69,7 +70,9 @@
                 events: events, 
                 eventOrder: "meal_time_order", // meal_time_order 기준으로 정렬
                 dateClick: function (info) {
-                    window.location.href = '/food/insertDailyMealForm?user_id=' + /*[[${user_id}]]*/ + '&date=' + info.dateStr;
+                    var selected_date = info.dateStr;
+
+                    window.location.href = `/food/insertDailyMealForm?date=${selected_date}`;
                 }
             });
         

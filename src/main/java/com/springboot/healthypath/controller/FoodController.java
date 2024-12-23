@@ -166,6 +166,53 @@ public class FoodController {
     return "redirect:/food/getFoodRecommendations";
   }
 
+  @GetMapping("/food/getDailyMeals")
+  public String getDailyMeals(HttpSession session, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    List<DailyMealVO> meals = foodService.getDailyMeals(sessionUser);
+
+    model.addAttribute("meals", meals);
+
+    return "food/getDailyMeals";
+  }
+
+  @GetMapping("/food/insertDailyMealForm")
+  public String insertDailyMealForm(FoodVO vo, Model model) {
+
+    return "food/insertDailyMealForm";
+  }
+
+  @ResponseBody
+  @GetMapping("/food/searchDailyMeal")
+  public List<FoodVO> searchDailyMeal(FoodVO vo, Model model) {
+
+    return foodService.searchFoodByName(vo);
+  }
+
+  @PostMapping("/food/insertDailyMeal")
+  public String insertDailyMeal(HttpSession session, DailyMealVO vo, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+    if (sessionUser == null) {
+      model.addAttribute("error", "사용자 세션이 만료되었습니다.");
+      return "redirect:/"; 
+    }
+    vo.setUser_id(sessionUser.getUser_id());
+    System.out.println("vo: " + vo);
+
+    try {
+      foodService.insertDailyMeal(vo);
+    } catch (Exception e) {
+      e.printStackTrace();
+      model.addAttribute("error", "데이터 삽입 중 오류가 발생했습니다.");
+      return "food/errorPage"; 
+    }
+
+    return "redirect:/food/getDailyMeals";
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+
   @GetMapping("/food/getRecipes")
   public String getRecipes(RecipeVO vo, Model model) {
     int page_size = 10;
@@ -205,15 +252,4 @@ public class FoodController {
     return "food/getRecipe";
   }
 
-  @GetMapping("/food/insertDailyMealForm")
-  public String insertDailyMealForm(HttpSession session, Model model) {
-    UserVO sessionUser = (UserVO) session.getAttribute("user");
-
-    List<DailyMealVO> meals = foodService.getDailyMeals(sessionUser);
-
-    model.addAttribute("meals", meals);
-
-    return "food/insertDailyMealForm";
-  }
-  
 }

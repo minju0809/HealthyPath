@@ -8,7 +8,9 @@
   <select id="searchFoodByName" parameterType="map" resultType="com.springboot.healthypath.food.FoodVO">
     SELECT * FROM foods
     WHERE food_name LIKE CONCAT('%', #{food_name}, '%')
-    LIMIT #{page_size} OFFSET #{offset}
+    <if test="page_size != null and offset != null">
+        LIMIT #{page_size} OFFSET #{offset}
+    </if>
   </select>
 
   <!-- 영양성분으로 검색 -->
@@ -64,6 +66,14 @@
     WHERE user_id = #{user_id} 
     ORDER BY FIELD(meal_time, '아침', '점심', '저녁', '간식'), date;
   </select>
+
+  <!-- 식단 저장 -->
+  <insert id="insertDailyMeal" parameterType="com.springboot.healthypath.food.DailyMealVO">
+    INSERT INTO daily_meals 
+      (user_id, date, meal_time, food_name, major_category_name, nutrient_reference_amount, energy_kcal)
+    VALUES (#{user_id}, #{date}, #{meal_time}, #{food_name}, #{major_category_name}, #{nutrient_reference_amount}, #{energy_kcal})
+  </insert>
+  
   
   <!-- ///// 레시피 ///// -->
   <!-- 레시피 조회 -->

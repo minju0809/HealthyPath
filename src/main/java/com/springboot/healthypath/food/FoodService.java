@@ -84,6 +84,17 @@ public class FoodService {
     return foodDao.getDailyMeals(vo);
   }
 
+  public List<FoodVO> searchFoodByName(FoodVO vo) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("food_name", vo.getFood_name());
+
+    return foodDao.searchFoodByName(params);
+  }
+
+  public void insertDailyMeal(DailyMealVO vo) {
+    foodDao.insertDailyMeal(vo);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
 
   public Map<String, Object> getRecipes(RecipeVO vo) {

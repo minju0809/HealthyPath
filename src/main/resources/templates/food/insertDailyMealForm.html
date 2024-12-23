@@ -1,86 +1,104 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta charset='utf-8' />  
-    <!-- 화면 해상도에 따라 글자 크기 대응(모바일 대응) -->  
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">  
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css' rel='stylesheet' />  
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>  
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
-    <style>  
-        /* body 스타일 */  
-        html, body {    
-            overflow: hidden;    
-            font-family: Arial, Helvetica Neue, Helvetica, sans-serif;    
-            font-size: 14px;  
-            height: 100%;
-            overflow: auto; /* 스크롤 생성 */
-        }  
-        #calendar-container {
-            padding: 12px;
-        }
-        /* 캘린더 위의 해더 스타일(날짜가 있는 부분) */  
-        .fc-header-toolbar {    
-            padding-top: 1em;    
-            padding-left: 1em;    
-            padding-right: 1em;  
-        }
-    </style>
+    <title>식단 기록하기</title>
 </head>
-
 <body>
     <div th:insert="~{fragments/header :: header}"></div>
 
-    <h1>식단 관리</h1>
-    <!-- calendar 태그 -->  
-    <div id='calendar-container'>    
-        <div id='calendar'></div>  
-    </div>  
-    
+    <h1>식단 기록하기</h1>
+
+    <form th:action="@{/food/insertDailyMeal}" method="post">
+        <!-- 날짜 선택 -->
+        <label for="date">날짜:</label>
+        <input type="date" id="date" name="date" required>
+
+        <!-- 식사 유형 선택 -->
+        <label for="meal_type">식사 유형:</label>
+        <select id="meal_type" name="meal_time" required>
+            <option value="아침">아침</option>
+            <option value="점심">점심</option>
+            <option value="저녁">저녁</option>
+            <option value="간식">간식</option>
+        </select>
+
+        <!-- 음식 찾기 -->
+        <label for="search_food">음식 찾기:</label>
+        <input type="text" id="search_food" placeholder="음식 이름 입력">
+        <button type="button" onclick="search_foods()">찾기</button>
+
+        <!-- 음식 선택 목록 -->
+        <div id="food_list"></div>
+
+        <!-- 선택된 음식 목록 -->
+        <div id="selected_foods">
+            <h3>선택된 음식</h3>
+        </div>
+
+        <!-- 먹은 양 입력 -->
+        <label for="nutrient_reference_amount">먹은 양 (g):</label>
+        <input type="number" id="nutrient_reference_amount" name="nutrient_reference_amount" placeholder="기본값: 100g" required>
+
+        <!-- 등록 버튼 -->
+        <button type="submit">등록</button>
+    </form>
+
     <div th:insert="~{fragments/footer :: footer}"></div>
 
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendar_el = document.getElementById('calendar');
-        
-            var meals = /*[[${meals}]]*/ []; // JSON 데이터로 변환됨
-        
-            // FullCalendar의 이벤트 데이터를 생성합니다.
-            var events = meals.map(function (meal) {
-                return {
-                    title: meal.meal_time + ': ' + meal.food_name,
-                    start: meal.date, // 날짜는 ISO 형식이어야 함 (YYYY-MM-DD)
-                    meal_time_order: getMealTimeOrder(meal.meal_time) // 정렬 기준 추가
-                };
-            });
-        
-            // FullCalendar 초기화
-            var calendar = new FullCalendar.Calendar(calendar_el, {
-                initialView: 'dayGridMonth',
-                locale: 'ko',
-                events: events, 
-                eventOrder: "meal_time_order", // meal_time_order 기준으로 정렬
-                dateClick: function (info) {
-                    window.location.href = '/food/insertDailyMealForm?user_id=' + /*[[${user_id}]]*/ + '&date=' + info.dateStr;
-                }
-            });
-        
-            calendar.render();
-        
-            function getMealTimeOrder(meal_time) {
-                switch (meal_time) {
-                    case '아침': return 1;
-                    case '점심': return 2;
-                    case '저녁': return 3;
-                    case '간식': return 4;
-                    default: return 5; // 미정렬 항목
-                }
-            }
-        });
+    <script>
+        search_foods = function () {
+            const food_name = document.getElementById('search_food').value;
+            fetch(`/food/searchDailyMeal?food_name=${food_name}`)
+                .then(response => response.json())
+                .then(data => {
+                    const food_list_div = document.getElementById('food_list');
+                    food_list_div.innerHTML = '';
+                    data.forEach(food => {
+                        const button = document.createElement('button');
+                        button.textContent = `${food.food_name} (${food.major_category_name}) - ${food.energy_kcal} kcal`;
+                        button.onclick = () => select_food(food.idx, food.food_name, food.major_category_name, food.energy_kcal);
+                        food_list_div.appendChild(button);
+                    });
+                });
+        };
+
+        select_food = function (food_idx, food_name, major_category_name, energy_kcal) {
+            const selected_foods_div = document.getElementById('selected_foods');
+
+            // 선택된 음식 추가
+            const selected_food = document.createElement('div');
+            selected_food.textContent = `${food_name} (${major_category_name}) - ${energy_kcal} kcal`;
+
+            // Hidden inputs 생성
+            const food_idx_input = document.createElement('input');
+            food_idx_input.type = 'hidden';
+            food_idx_input.name = 'food_idx';
+            food_idx_input.value = food_idx;
+
+            const food_name_input = document.createElement('input');
+            food_name_input.type = 'hidden';
+            food_name_input.name = 'food_name';
+            food_name_input.value = food_name;
+
+            const major_category_name_input = document.createElement('input');
+            major_category_name_input.type = 'hidden';
+            major_category_name_input.name = 'major_category_name';
+            major_category_name_input.value = major_category_name;
+
+            const energy_kcal_input = document.createElement('input');
+            energy_kcal_input.type = 'hidden';
+            energy_kcal_input.name = 'energy_kcal';
+            energy_kcal_input.value = energy_kcal;
+
+            // Hidden inputs를 선택된 음식 div에 추가
+            selected_food.appendChild(food_idx_input);
+            selected_food.appendChild(food_name_input);
+            selected_food.appendChild(major_category_name_input);
+            selected_food.appendChild(energy_kcal_input);
+
+            selected_foods_div.appendChild(selected_food);
+        };
     </script>
 </body>
-
 </html>

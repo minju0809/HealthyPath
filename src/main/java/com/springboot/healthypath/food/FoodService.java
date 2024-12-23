@@ -79,6 +79,13 @@ public class FoodService {
     foodDao.deleteFoodRecommendation(vo);
   }
 
+  public List<DailyMealVO> getDailyMeals(UserVO vo) {
+
+    return foodDao.getDailyMeals(vo);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+
   public Map<String, Object> getRecipes(RecipeVO vo) {
     Map<String, Object> result = new HashMap<>();
 

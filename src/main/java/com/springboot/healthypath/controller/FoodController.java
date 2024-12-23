@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.springboot.healthypath.food.DailyMealVO;
 import com.springboot.healthypath.food.FoodRecommendVO;
 import com.springboot.healthypath.food.FoodService;
 import com.springboot.healthypath.food.FoodVO;
@@ -203,4 +204,16 @@ public class FoodController {
 
     return "food/getRecipe";
   }
+
+  @GetMapping("/food/insertDailyMealForm")
+  public String insertDailyMealForm(HttpSession session, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+
+    List<DailyMealVO> meals = foodService.getDailyMeals(sessionUser);
+
+    model.addAttribute("meals", meals);
+
+    return "food/insertDailyMealForm";
+  }
+  
 }

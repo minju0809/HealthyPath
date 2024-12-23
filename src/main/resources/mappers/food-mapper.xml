@@ -58,6 +58,14 @@
     DELETE FROM food_recommendations WHERE recommendation_id = #{recommendation_id}
   </delete>
 
+  <!-- 먹은 식단 보기 -->
+  <select id="getDailyMeals" parameterType="com.springboot.healthypath.user.UserVO" resultType="com.springboot.healthypath.food.DailyMealVO">
+    SELECT * FROM daily_meals 
+    WHERE user_id = #{user_id} 
+    ORDER BY FIELD(meal_time, '아침', '점심', '저녁', '간식'), date;
+  </select>
+  
+  <!-- ///// 레시피 ///// -->
   <!-- 레시피 조회 -->
   <select id="getRecipes" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
     SELECT *

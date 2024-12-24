@@ -1,5 +1,7 @@
 package com.springboot.healthypath.controller;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -167,7 +169,7 @@ public class FoodController {
     return "redirect:/food/getFoodRecommendations";
   }
 
-  @GetMapping("/food/getDailyMeals")
+  @GetMapping("/food/getMonthlyMeals")
   public String getDailyMeals(HttpSession session, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
 
@@ -175,12 +177,14 @@ public class FoodController {
 
     model.addAttribute("meals", meals);
 
-    return "food/getDailyMeals";
+    return "food/getMonthlyMeals";
   }
 
   @GetMapping("/food/insertDailyMealForm")
-  public String insertDailyMealForm(@RequestParam String date, FoodVO vo, Model model) {
-    model.addAttribute("date", date);
+  public String insertDailyMealForm(@RequestParam(required = false) String date, FoodVO vo, Model model) {
+    if (date != null) {
+      model.addAttribute("date", date);
+    }
 
     return "food/insertDailyMealForm";
   }
@@ -203,23 +207,68 @@ public class FoodController {
 
     vo.setUser_id(sessionUser.getUser_id());
 
-    float energy_kcal = vo.getEnergy_kcal();  // Get the base kcal from the frontend
+    float energy_kcal = vo.getEnergy_kcal();
     double nutrient_reference_amount = vo.getNutrient_reference_amount();
-    
-    float calculated_energy =  energy_kcal * (float)(nutrient_reference_amount / 100.0f);
+
+    float calculated_energy = energy_kcal * (float) (nutrient_reference_amount / 100.0);
+    double protein_g = vo.getProtein_g() * (nutrient_reference_amount / 100.0);
+    double fat_g = vo.getFat_g() * (nutrient_reference_amount / 100.0);
+    double carbohydrate_g = vo.getCarbohydrate_g() * (nutrient_reference_amount / 100.0);
     
     vo.setEnergy_kcal(calculated_energy);
+    vo.setProtein_g(protein_g);
+    vo.setFat_g(fat_g);
+    vo.setCarbohydrate_g(carbohydrate_g);
 
     try {
       foodService.insertDailyMeal(vo);
     } catch (Exception e) {
       e.printStackTrace();
       model.addAttribute("error", "데이터 삽입 중 오류가 발생했습니다.");
-      
-      return "food/errorPage"; 
+
+      return "food/errorPage";
     }
 
-    return "redirect:/food/getDailyMeals";
+    return "redirect:/food/getMonthlyMeals";
+  }
+
+  @GetMapping("/food/getWeeklyMeals")
+  public String getWeeklyMeal(
+      @RequestParam(required = false) String week_start, DailyMealVO vo,
+      HttpSession session, Model model) {
+    UserVO sessionUser = (UserVO) session.getAttribute("user");
+    if (sessionUser == null) {
+      model.addAttribute("error", "사용자 세션이 만료되었습니다.");
+
+      return "redirect:/";
+    }
+
+    vo.setUser_id(sessionUser.getUser_id());
+    
+    // 현재 주의 시작일 계산 (week_start가 없으면 오늘 기준)
+    LocalDate start_date = (week_start != null)
+    ? LocalDate.parse(week_start)
+    : LocalDate.now().with(DayOfWeek.MONDAY);
+    LocalDate end_date = start_date.plusDays(6);
+
+    vo.setStart_date(start_date);
+    vo.setEnd_date(end_date);
+    
+    // 서비스에서 주간 데이터를 가져옴
+    List<DailyMealVO> meals = foodService.getWeeklyMeals(vo);
+    
+    // 이전 주와 다음 주 계산
+    LocalDate previous_week = start_date.minusWeeks(1);
+    LocalDate next_week = start_date.plusWeeks(1);
+
+    // 모델에 데이터 추가
+    model.addAttribute("meals", meals);
+    model.addAttribute("start_date", start_date);
+    model.addAttribute("end_date", end_date);
+    model.addAttribute("previous_week", previous_week);
+    model.addAttribute("next_week", next_week);
+
+    return "food/getWeeklyMeals";
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,10 @@
 <body>
     <div th:insert="~{fragments/header :: header}"></div>
 
-    <h1>식단 관리</h1>
+    <h1>
+        식단 관리
+        <a href="/food/getWeeklyMeals" style="float: right; font-size: 16px; margin-right: 16px;">주간 식단 보기</a>
+    </h1>
 
     <!-- calendar 태그 -->  
     <div id='calendar-container'>    

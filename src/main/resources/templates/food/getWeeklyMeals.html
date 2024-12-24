@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주간 식단</title>
+</head>
+
+<body>
+  <div th:insert="~{fragments/header :: header}"></div>
+
+  <h1>
+    주간 식단
+    <a href="/food/getMonthlyMeals" style="float: right; font-size: 16px; margin-right: 16px;">월간 식단 보기</a>
+  </h1>
+  <div align=center>
+    <h3 th:text="'주: ' + ${start_date} + ' ~ ' + ${end_date}"></h3>
+  
+    <table border=1>
+        <thead>
+            <tr>
+                <th>날짜</th>
+                <th>언제</th>
+                <th>이름</th>
+                <th>용량</th>
+                <th>칼로리</th>
+                <th>단백질</th>
+                <th>탄수화물</th>
+                <th>지방</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${meals.size() == 0}">
+              <td colspan="8" style="text-align: center;">입력된 식단이 없습니다.</td>
+            </tr>
+            <tr th:each="meal : ${meals}">
+                <td th:text="${meal.date}"></td>
+                <td th:text="${meal.meal_time}"></td>
+                <td>
+                  <a th:href="@{'/food/getFood/' + ${meal.idx}}"
+                    th:text="${meal.food_name}"></a>
+                </td>
+                <td th:text="${meal.nutrient_reference_amount} + 'g'"></td>
+                <td th:text="${meal.energy_kcal} + 'kcal'"></td>
+                <td th:text="${meal.protein_g} + 'kcal'"></td>
+                <td th:text="${meal.carbohydrate_g} + 'kcal'"></td>
+                <td th:text="${meal.fat_g} + 'kcal'"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+  
+    <div>
+        <a th:href="@{/food/getWeeklyMeals(week_start=${previous_week})}">이전 주</a>
+        <a th:href="@{/food/getWeeklyMeals(week_start=${next_week})}">다음 주</a>
+    </div>
+  
+  </div>
+  
+  <div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

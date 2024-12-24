@@ -1,5 +1,6 @@
 package com.springboot.healthypath.food;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.Data;
@@ -15,11 +16,12 @@ public class DailyMealVO {
   private String major_category_name;
   private double nutrient_reference_amount;
   private float energy_kcal;
+  private double protein_g; // 단백질 (g)
+  private double fat_g; // 지방 (g)
+  private double carbohydrate_g; // 탄수화물 (g)
   private Date created_at;
   private Date updated_at;
 
-  private double protein_g; // 단백질 (g)
-  private double fat_g; // 지방 (g)
-  private double ash_g; // 회분 (g)
-  private double carbohydrate_g; // 탄수화물 (g)
+  private LocalDate start_date;
+  private LocalDate end_date;
 }

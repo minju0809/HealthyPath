@@ -62,23 +62,25 @@
 
   <!-- 먹은 식단 보기 -->
   <select id="getDailyMeals" parameterType="com.springboot.healthypath.user.UserVO" resultType="com.springboot.healthypath.food.DailyMealVO">
-    SELECT 
-      dm.meal_id, dm.user_id, f.idx, dm.date, dm.meal_time,
-      f.food_name, f.major_category_name, f.nutrient_reference_amount, f.energy_kcal,
-      f.protein_g, f.fat_g, f.carbohydrate_g, 
-      dm.created_at, dm.updated_at
-    FROM daily_meals dm JOIN foods f
-    ON dm.idx = f.idx
-    WHERE dm.user_id = #{user_id}
-    ORDER BY FIELD(meal_time, '아침', '점심', '저녁', '간식'), date;
+    SELECT * FROM daily_meals
+    WHERE user_id = #{user_id}
+    ORDER BY FIELD(meal_time, '아침', '점심', '저녁', '간식'), date
   </select>
 
   <!-- 식단 저장 -->
   <insert id="insertDailyMeal" parameterType="com.springboot.healthypath.food.DailyMealVO">
     INSERT INTO daily_meals 
-      (user_id, idx, date, meal_time, food_name, major_category_name, nutrient_reference_amount, energy_kcal)
-    VALUES (#{user_id}, #{idx}, #{date}, #{meal_time}, #{food_name}, #{major_category_name}, #{nutrient_reference_amount}, #{energy_kcal})
+      (user_id, idx, date, meal_time, food_name, major_category_name, nutrient_reference_amount, energy_kcal, protein_g, fat_g, carbohydrate_g)
+    VALUES (#{user_id}, #{idx}, #{date}, #{meal_time}, #{food_name}, #{major_category_name}, #{nutrient_reference_amount}, #{energy_kcal}, #{protein_g}, #{fat_g}, #{carbohydrate_g})
   </insert>
+
+  <!-- 주간 식단 보기 -->
+  <select id="getWeeklyMeals" parameterType="com.springboot.healthypath.food.DailyMealVO" resultType="com.springboot.healthypath.food.DailyMealVO">
+    SELECT * FROM daily_meals 
+    WHERE user_id = #{user_id} 
+      AND date BETWEEN #{start_date} AND #{end_date}
+    ORDER BY date
+  </select>
   
   
   <!-- ///// 레시피 ///// -->

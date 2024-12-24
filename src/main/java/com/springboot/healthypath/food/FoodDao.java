@@ -19,6 +19,7 @@ public interface FoodDao {
   void deleteFoodRecommendation(FoodRecommendVO vo);
   List<DailyMealVO> getDailyMeals(UserVO vo);
   void insertDailyMeal(DailyMealVO vo);
+  List<DailyMealVO> getWeeklyMeals(DailyMealVO vo);
 
   List<RecipeVO> getRecipes(RecipeVO vo);
   int getTotalCount(RecipeVO vo);

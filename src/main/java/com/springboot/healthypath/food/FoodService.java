@@ -95,6 +95,10 @@ public class FoodService {
     foodDao.insertDailyMeal(vo);
   }
 
+  public List<DailyMealVO> getWeeklyMeals(DailyMealVO vo) {
+    return foodDao.getWeeklyMeals(vo);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
 
   public Map<String, Object> getRecipes(RecipeVO vo) {

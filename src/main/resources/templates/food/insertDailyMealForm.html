@@ -37,6 +37,9 @@
         <input type="hidden" id="selected_food_name" name="food_name">
         <input type="hidden" id="selected_major_category_name" name="major_category_name">
         <input type="hidden" id="selected_energy_kcal" name="energy_kcal">
+        <input type="hidden" id="selected_protein_g" name="protein_g">
+        <input type="hidden" id="selected_fat_g" name="fat_g">
+        <input type="hidden" id="selected_carbohydrate_g" name="carbohydrate_g">
     
         <div id="selected_foods">
             <br />
@@ -73,6 +76,9 @@
                             option.dataset.food_name = food.food_name;
                             option.dataset.major_category_name = food.major_category_name || '';
                             option.dataset.energy_kcal = food.energy_kcal;
+                            option.dataset.protein_g = food.protein_g || 0; // 단백질 (g)
+                            option.dataset.fat_g = food.fat_g || 0; // 지방 (g)
+                            option.dataset.carbohydrate_g = food.carbohydrate_g || 0; // 탄수화물 (g)
                             food_list.appendChild(option);
                         });
                     } else {
@@ -93,6 +99,9 @@
             document.getElementById('selected_food_name').value = selected_option.dataset.food_name;
             document.getElementById('selected_major_category_name').value = selected_option.dataset.major_category_name;
             document.getElementById('selected_energy_kcal').value = selected_option.dataset.energy_kcal;
+            document.getElementById('selected_protein_g').value = selected_option.dataset.protein_g;
+            document.getElementById('selected_fat_g').value = selected_option.dataset.fat_g;
+            document.getElementById('selected_carbohydrate_g').value = selected_option.dataset.carbohydrate_g;
     
             const selected_foods_div = document.getElementById('selected_foods');
             selected_foods_div.innerHTML = `<br /><div>선택한 음식: ${selected_option.textContent}</div><br />`;

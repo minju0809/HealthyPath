@@ -1,23 +1,36 @@
+<header>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title}">My Application</title>
+  
+  <!-- Bootstrap CSS 추가 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- 사용자 정의 CSS -->
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Bootstrap JS 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</header>
+
 <div th:fragment="header">
-  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; border-bottom: 1px solid #ddd;">
-    <div>
-      <h1 style="margin: 0; font-size: 24px; color: #333;">
-        <a href="/">HealthyPath</a>
-        <a href="/food/getRecipes" style="font-size: 16px">레시피소개</a>
-      </h1>
-    </div>
-    
-    <div>
-      <div th:if="${session.user == null}" style="text-align: right;">
-        <a href="/signup" class="btn" style="margin-left: 10px;">회원가입/로그인</a>
-      </div>
-      <div th:if="${session.user != null}" style="text-align: right;">
-        <span th:text="'환영합니다, ' + ${session.user.name} + '님!'" style="margin-right: 10px; font-size: 14px;"></span>
-        <a href="/food/recommendForm" class="btn" style="margin-left: 10px;">음식추천</a>
-        <a href="/food/getFoodRecommendations" class="btn" style="margin-left: 10px;">저장한음식</a>
-        <a href="/user/getUser" class="btn" style="margin-left: 10px;">마이페이지</a>
-        <a href="/logout" class="btn" style="margin-left: 10px;">로그아웃</a>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/" style="font-size: 24px; color: #333;">HealthyPath</a>
+      <a class="nav-link" href="/food/getRecipes" style="font-size: 16px;">레시피소개</a>
+
+      <div class="d-flex">
+        <div th:if="${session.user == null}" class="text-end">
+          <a href="/signup" class="btn btn-outline-primary me-2">회원가입/로그인</a>
+        </div>
+        <div th:if="${session.user != null}" class="text-end">
+          <span th:text="'환영합니다, ' + ${session.user.name} + '님!'" class="me-2 text-muted"></span>
+          <a href="/food/recommendForm" class="btn btn-outline-success me-2">음식추천</a>
+          <a href="/food/getFoodRecommendations" class="btn btn-outline-info me-2">저장한음식</a>
+          <a href="/user/getUser" class="btn btn-outline-secondary me-2">마이페이지</a>
+          <a href="/logout" class="btn btn-outline-danger">로그아웃</a>
+        </div>
       </div>
     </div>
-  </div>
+  </nav>
 </div>

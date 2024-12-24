@@ -33,9 +33,9 @@
         <button type="submit">추천 받기</button>
     </form>
 
-    <h2>추천 메뉴</h2>
-
+    
     <div th:if="${recommendations != null}">
+        <h2>추천 메뉴</h2>
         <h3>아침</h3>
         <span th:text="${vo.breakfast_category}">아침 카테고리</span>
         <ul>

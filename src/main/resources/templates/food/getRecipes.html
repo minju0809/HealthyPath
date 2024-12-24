@@ -20,8 +20,10 @@
 <body>
   <div th:insert="~{fragments/header :: header}"></div>
 
-  <h3>먹고 싶은 음식을 선택하세요</h3>
-  <button id="startSelection">오늘 뭐먹지?</button>
+  <div align=center>
+    <h3>먹고 싶은 음식을 선택하세요</h3>
+    <button id="startSelection">오늘 뭐먹지?</button>
+  </div>
 
   <div id="popup"
     style="display: none; position: fixed; top: 20%; left: 30%; width: 40%; background: #fff; padding: 20px; border: 1px solid #ccc; z-index: 1000; box-shadow: 0 0 10px rgba(0,0,0,0.5);">

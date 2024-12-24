@@ -74,7 +74,7 @@
   </h1>
 
   <form th:action="@{/updateUser}" method="post" onsubmit="return showSuccessMessage()">
-    <table border="1">
+    <table>
       <tr>
         <th>User ID</th>
         <td><input type="text" name="user_id" th:value="${user.user_id}" readonly></td>

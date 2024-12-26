@@ -8,25 +8,12 @@ body {
   color: #333;
 }
 
-h1, h2, h3 {
-  color: #444;
-}
-
-/* 페이지 섹션 스타일 */
-h1 {
-  text-align: center;
-  margin: 20px 0;
-}
-
-h2 {
-  margin-top: 40px;
-  text-align: center;
-}
-
+h1,
+h2,
 h3 {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #555;
+  margin: 20px 0;
+  text-align: center;
+  color: #444;
 }
 
 a {
@@ -42,6 +29,7 @@ button {
   background-color: #28a745;
   color: #fff;
   border: none;
+  margin: 4px;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
@@ -54,18 +42,17 @@ table {
   border-collapse: collapse;
   border: 1px solid #ddd;
   border-radius: 8px;
-  overflow: hidden; /* 테두리가 둥글게 적용되도록 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 기본 그림자 효과 */
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 20px 0;
 }
 
 table:hover {
-  background-color: #f1f1f1; /* 행 배경색 변경 */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+  background-color: #f1f1f1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease-in-out;
 }
 
-/* 테이블 헤더 스타일 */
 table th {
   background-color: #f8f9fa;
   color: #333;
@@ -74,7 +61,6 @@ table th {
   border-bottom: 2px solid #ddd;
 }
 
-/* 테이블 본문 스타일 */
 table td {
   padding: 10px;
   border-bottom: 1px solid #ddd;
@@ -90,7 +76,6 @@ td button {
   width: 100%;
 }
 
-
 /* 폼 스타일 */
 form {
   background: #fff;
@@ -105,15 +90,15 @@ form {
 
 form label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-weight: bold;
 }
 
 form input[type="number"],
 form select {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 8px;
+  margin-bottom: 4px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
@@ -130,16 +115,16 @@ ul {
 }
 
 ul li {
+  position: relative;
   background: #fff;
   border: 1px solid #ddd;
   max-width: 600px;
   padding: 0 12px;
   margin: 4px auto;
+  height: 60px;
   border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
 }
 
 ul li span {
@@ -147,27 +132,45 @@ ul li span {
   color: #666;
 }
 
+.content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .recommendation-form {
-  border: none;
-  width: 120px;
+  display: inline;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   max-width: 120px;
-  box-shadow: 0 0 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
   border-radius: 4px;
-  margin: 4px auto;
+}
+
+.recommendation-form button {
+  margin: 0;
 }
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   form {
-      padding: 15px;
+    padding: 15px;
   }
 
   ul li {
-      flex-direction: column;
-      align-items: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   ul li button {
-      margin-top: 10px;
+    margin-top: 10px;
   }
 }

@@ -36,13 +36,15 @@
     
     <div th:if="${recommendations != null}">
         <h2>추천 메뉴</h2>
-        <h3>아침</h3>
-        <span th:text="${vo.breakfast_category}">아침 카테고리</span>
+        <h3 th:text="'아침: [ ' + ${vo.breakfast_category} + ' ]'">아침 카테고리</h3>
         <ul>
             <li th:each="food : ${recommendations['breakfast']}">
-                <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
-                <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
-                <form th:action="@{/food/insertFoodRecommendation}" method="post" style="display: inline;" class="recommendation-form">
+                <div class="content">
+                    <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
+                    <span> - </span>
+                    <span th:text="${food.energy_kcal}">Calories</span> kcal
+                </div>
+                <form th:action="@{/food/insertFoodRecommendation}" method="post" class="recommendation-form">
                     <input type="hidden" name="idx" th:value="${food.idx}" />
                     <input type="hidden" name="food_name" th:value="${food.food_name}" />
                     <input type="hidden" name="major_category_name" th:value="${vo.breakfast_category}" />
@@ -52,13 +54,15 @@
             </li>
         </ul>
         
-        <h3>점심</h3>
-        <span th:text="${vo.lunch_category}">점심 카테고리</span>
+        <h3 th:text="'점심: [ ' + ${vo.lunch_category} + ' ]'">점심 카테고리</h3>
         <ul>
             <li th:each="food : ${recommendations['lunch']}">
-                <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
-                <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
-                <form th:action="@{/food/insertFoodRecommendation}" method="post" style="display: inline;" class="recommendation-form">
+                <div class="content">
+                    <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
+                    <span> - </span>
+                    <span th:text="${food.energy_kcal}">Calories</span> kcal
+                </div>
+                <form th:action="@{/food/insertFoodRecommendation}" method="post" class="recommendation-form">
                     <input type="hidden" name="idx" th:value="${food.idx}" />
                     <input type="hidden" name="food_name" th:value="${food.food_name}" />
                     <input type="hidden" name="major_category_name" th:value="${vo.lunch_category}" />
@@ -68,13 +72,15 @@
             </li>
         </ul>
         
-        <h3>저녁</h3>
-        <span th:text="${vo.dinner_category}">저녁 카테고리</span>
+        <h3 th:text="'저녁: [ ' + ${vo.dinner_category} + ' ]'">저녁 카테고리</h3>
         <ul>
             <li th:each="food : ${recommendations['dinner']}">
-                <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
-                <span> - </span><span th:text="${food.energy_kcal}">Calories</span> kcal
-                <form th:action="@{/food/insertFoodRecommendation}" method="post" style="display: inline;" class="recommendation-form">
+                <div class="content">
+                    <a th:href="@{'/food/getFood/' + ${food.idx}}" th:text="${food.food_name}"></a>
+                    <span> - </span>
+                    <span th:text="${food.energy_kcal}">Calories</span> kcal
+                </div>
+                <form th:action="@{/food/insertFoodRecommendation}" method="post" class="recommendation-form">
                     <input type="hidden" name="idx" th:value="${food.idx}" />
                     <input type="hidden" name="food_name" th:value="${food.food_name}" />
                     <input type="hidden" name="major_category_name" th:value="${vo.dinner_category}" />

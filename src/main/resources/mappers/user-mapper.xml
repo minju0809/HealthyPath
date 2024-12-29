@@ -20,28 +20,28 @@
 		INSERT INTO users (email, name)	VALUES (#{email}, #{name})
 	</insert>
 
+  <!-- 프로시저 -->
   <update id="updateUser" parameterType="com.springboot.healthypath.user.UserVO">
-    UPDATE users 
-      SET 
-        name = #{name},
-        age = #{age},
-        gender = #{gender},
-        weight = #{weight},
-        height = #{height},
-        bmi = #{bmi},
-        classification = #{classification},
-        bmr = #{bmr},
-        tdee = #{tdee},
-        activity_level = #{activity_level},
-        recommended_carbs = #{recommended_carbs},
-        recommended_protein = #{recommended_protein},
-        recommended_fats = #{recommended_fats},
-        goal = #{goal},
-        dietary_goal = #{dietary_goal},
-        excluded_foods = #{excluded_foods},
-        updated_at = CURRENT_TIMESTAMP
-      WHERE email = #{email}
-	</update>
+      CALL update_user_info(
+        #{email},
+        #{name},
+        #{age},
+        #{gender},
+        #{weight},
+        #{height},
+        #{bmi},
+        #{classification},
+        #{bmr},
+        #{tdee},
+        #{activity_level},
+        #{recommended_carbs},
+        #{recommended_protein},
+        #{recommended_fats},
+        #{goal},
+        #{dietary_goal},
+        #{excluded_foods}
+      )
+  </update>
 
   <select id="getBmiRecords"
     parameterType="com.springboot.healthypath.user.UserVO"
@@ -49,9 +49,9 @@
       SELECT * FROM bmi_records WHERE user_id = #{user_id}
   </select>
 
+  <!-- 프로시저 -->
   <insert id="insertBmiRecord" parameterType="com.springboot.healthypath.user.BmiRecordVO">
-		INSERT INTO bmi_records (user_id, weight, bmi, classification, bmr)	
-      VALUES (#{user_id}, #{weight}, #{bmi}, #{classification}, #{bmr})
-	</insert>
+      CALL insert_bmi_record(#{user_id}, #{weight})
+  </insert>
 
 </mapper>

@@ -213,12 +213,6 @@ public class UserController {
       UserVO user = userService.getUser(sessionUser);
       vo.setUser_id(user.getUser_id());
       
-      calculateBmiAndBmr(user);
-
-      vo.setBmi(user.getBmi());
-      vo.setClassification(user.getClassification());
-      vo.setBmr(user.getBmr());
-  
       // BMI 기록 삽입
       userService.insertBmiRecord(vo);
 
@@ -227,37 +221,5 @@ public class UserController {
 
       return "redirect:/";
     }
-  }
-
-  public void calculateBmiAndBmr(UserVO user) {
-    // BMI 계산
-    double heightInMeters = user.getHeight() / 100.0; // cm -> m
-    double bmi = user.getWeight() / (heightInMeters * heightInMeters);
-    user.setBmi(Math.round(bmi * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
-
-    String classification;
-    
-    if (bmi < 18.5) {
-        classification = "저체중";
-    } else if (bmi < 25.0) {
-        classification = "정상";
-    } else if (bmi < 30.0) {
-        classification = "과체중";
-    } else {
-        classification = "비만";
-    }
-    
-    user.setClassification(classification);
-
-    // BMR 계산 (Harris-Benedict 식)
-    double bmr;
-    if ("남성".equals(user.getGender())) {
-      bmr = 88.362 + (13.397 * user.getWeight()) + (4.799 * user.getHeight()) - (5.677 * user.getAge());
-    } else if ("여성".equals(user.getGender())) {
-      bmr = 447.593 + (9.247 * user.getWeight()) + (3.098 * user.getHeight()) - (4.330 * user.getAge());
-    } else {
-      throw new IllegalArgumentException("성별이 올바르지 않습니다.");
-    }
-    user.setBmr(Math.round(bmr * 100.0) / 100.0); // 소수점 둘째 자리까지 반올림
   }
 }

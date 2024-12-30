@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,13 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.springboot.healthypath.food.DailyMealVO;
-import com.springboot.healthypath.food.FoodRecommendVO;
-import com.springboot.healthypath.food.FoodService;
-import com.springboot.healthypath.food.FoodVO;
-import com.springboot.healthypath.food.NutrientService;
-import com.springboot.healthypath.food.RecipeVO;
-import com.springboot.healthypath.user.UserVO;
+import com.springboot.healthypath.model.DailyMealVO;
+import com.springboot.healthypath.model.FoodRecommendVO;
+import com.springboot.healthypath.model.FoodVO;
+import com.springboot.healthypath.model.RecipeVO;
+import com.springboot.healthypath.service.FoodService;
+import com.springboot.healthypath.service.NutrientService;
+import com.springboot.healthypath.model.UserVO;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -107,26 +106,19 @@ public class FoodController {
   }
 
   @GetMapping("/food/recommendations")
-  public String recommendations(HttpSession session, @ModelAttribute FoodRecommendVO vo, Model model) {
-    UserVO sessionUser = (UserVO) session.getAttribute("user");
+  public String recommendations(@ModelAttribute FoodRecommendVO vo, Model model) {
+    Map<String, List<FoodRecommendVO>> recommendations = foodService.getFoodsByCategoryAndCalories(vo);
 
-    if (sessionUser != null) {
-      Map<String, List<FoodRecommendVO>> recommendations = foodService.getFoodsByCategoryAndCalories(vo);
+    model.addAttribute("recommendations", recommendations);
+    model.addAttribute("vo", vo); // 사용자 입력 값 다시 전달
+    model.addAttribute("categories", Arrays.asList(
+        "밥류", "빵 및 과자류", "면 및 만두류", "죽 및 스프류", "국 및 탕류",
+        "찌개 및 전골류", "찜류", "구이류", "전·적 및 부침류", "볶음류",
+        "조림류", "튀김류", "나물·숙채류", "생채·무침류", "김치류", "젓갈류",
+        "장아찌·절임류", "음료 및 차류", "수·조·어·육류", "장류, 양념류",
+        "유제품류 및 빙과류", "과일류", "두류, 견과 및 종실류"));
 
-      model.addAttribute("recommendations", recommendations);
-      model.addAttribute("vo", vo); // 사용자 입력 값 다시 전달
-      model.addAttribute("categories", Arrays.asList(
-          "밥류", "빵 및 과자류", "면 및 만두류", "죽 및 스프류", "국 및 탕류",
-          "찌개 및 전골류", "찜류", "구이류", "전·적 및 부침류", "볶음류",
-          "조림류", "튀김류", "나물·숙채류", "생채·무침류", "김치류", "젓갈류",
-          "장아찌·절임류", "음료 및 차류", "수·조·어·육류", "장류, 양념류",
-          "유제품류 및 빙과류", "과일류", "두류, 견과 및 종실류"));
-
-      return "food/recommendForm";
-    } else {
-
-      return "redirect:/";
-    }
+    return "food/recommendForm";
   }
 
   @PostMapping("/food/insertFoodRecommendation")
@@ -134,23 +126,18 @@ public class FoodController {
   public ResponseEntity<?> insertFoodRecommendation(HttpSession session, FoodRecommendVO vo, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (sessionUser != null) {
-      vo.setUser_id(sessionUser.getUser_id());
+    vo.setUser_id(sessionUser.getUser_id());
 
-      List<FoodRecommendVO> li = foodService.getFoodRecommendations(sessionUser);
-      for (FoodRecommendVO food : li) {
-        if (food.getIdx() == vo.getIdx()) {
+    List<FoodRecommendVO> li = foodService.getFoodRecommendations(sessionUser);
+    for (FoodRecommendVO food : li) {
+      if (food.getIdx() == vo.getIdx()) {
 
-          return ResponseEntity.ok(Collections.singletonMap("message", "이미 저장되어 있는 음식입니다. 저장한 음식 페이지로 이동하시겠습니까?"));
-        }
+        return ResponseEntity.ok(Collections.singletonMap("message", "이미 저장되어 있는 음식입니다. 저장한 음식 페이지로 이동하시겠습니까?"));
       }
-      foodService.insertFoodRecommendation(vo);
-
-      return ResponseEntity.ok(Collections.singletonMap("message", "음식이 저장되었습니다. 저장한 음식 페이지로 이동하시겠습니까?"));
-    } else {
-
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "로그인이 필요합니다."));
     }
+    foodService.insertFoodRecommendation(vo);
+
+    return ResponseEntity.ok(Collections.singletonMap("message", "음식이 저장되었습니다. 저장한 음식 페이지로 이동하시겠습니까?"));
   }
 
   @GetMapping("/food/getFoodRecommendations")
@@ -199,12 +186,6 @@ public class FoodController {
   @PostMapping("/food/insertDailyMeal")
   public String insertDailyMeal(HttpSession session, DailyMealVO vo, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
-    if (sessionUser == null) {
-      model.addAttribute("error", "사용자 세션이 만료되었습니다.");
-
-      return "redirect:/"; 
-    }
-
     vo.setUser_id(sessionUser.getUser_id());
 
     float energy_kcal = vo.getEnergy_kcal();
@@ -214,7 +195,7 @@ public class FoodController {
     double protein_g = vo.getProtein_g() * (nutrient_reference_amount / 100.0);
     double fat_g = vo.getFat_g() * (nutrient_reference_amount / 100.0);
     double carbohydrate_g = vo.getCarbohydrate_g() * (nutrient_reference_amount / 100.0);
-    
+
     vo.setEnergy_kcal(calculated_energy);
     vo.setProtein_g(protein_g);
     vo.setFat_g(fat_g);
@@ -237,26 +218,20 @@ public class FoodController {
       @RequestParam(required = false) String week_start, DailyMealVO vo,
       HttpSession session, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
-    if (sessionUser == null) {
-      model.addAttribute("error", "사용자 세션이 만료되었습니다.");
-
-      return "redirect:/";
-    }
-
     vo.setUser_id(sessionUser.getUser_id());
-    
+
     // 현재 주의 시작일 계산 (week_start가 없으면 오늘 기준)
     LocalDate start_date = (week_start != null)
-    ? LocalDate.parse(week_start)
-    : LocalDate.now().with(DayOfWeek.MONDAY);
+        ? LocalDate.parse(week_start)
+        : LocalDate.now().with(DayOfWeek.MONDAY);
     LocalDate end_date = start_date.plusDays(6);
 
     vo.setStart_date(start_date);
     vo.setEnd_date(end_date);
-    
+
     // 서비스에서 주간 데이터를 가져옴
     List<DailyMealVO> meals = foodService.getWeeklyMeals(vo);
-    
+
     // 이전 주와 다음 주 계산
     LocalDate previous_week = start_date.minusWeeks(1);
     LocalDate next_week = start_date.plusWeeks(1);

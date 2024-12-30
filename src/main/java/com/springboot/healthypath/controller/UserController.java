@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.healthypath.user.BmiRecordVO;
-import com.springboot.healthypath.user.UserService;
-import com.springboot.healthypath.user.UserVO;
+import com.springboot.healthypath.model.BmiRecordVO;
+import com.springboot.healthypath.service.UserService;
+import com.springboot.healthypath.model.UserVO;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.servlet.http.HttpSession;
@@ -115,7 +115,7 @@ public class UserController {
       } else {
         session.setAttribute("user", user);
 
-        return "redirect:/"; // 로그인 후 메인 페이지로 리다이렉트
+        return "redirect:/"; 
       }
     } catch (
 
@@ -147,11 +147,10 @@ public class UserController {
       sessionUser.setDietary_goal(vo.getDietary_goal());
       sessionUser.setExcluded_foods(vo.getExcluded_foods());
 
-      // 사용자 정보를 데이터베이스에 저장하는 로직 추가
       userService.updateUser(sessionUser);
-    } 
+    }
 
-    return "redirect:/user/getUser"; // 메인 페이지로 리다이렉트
+    return "redirect:/user/getUser"; 
   }
 
   @GetMapping("/logout")
@@ -165,61 +164,37 @@ public class UserController {
   public String getUser(HttpSession session, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (sessionUser != null) {
-      UserVO vo = userService.getUser(sessionUser);
-      model.addAttribute("user", vo);
+    UserVO vo = userService.getUser(sessionUser);
+    model.addAttribute("user", vo);
 
-      return "user/getUser";
-    } else {
-
-      return "redirect:/";
-    }
+    return "user/getUser";
   }
 
   @GetMapping("/user/getBmiRecords")
   public String getBmiRecords(HttpSession session, Model model) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (sessionUser != null) {
-      List<BmiRecordVO> records = userService.getBmiRecords(sessionUser);
-      model.addAttribute("records", records);
+    List<BmiRecordVO> records = userService.getBmiRecords(sessionUser);
+    model.addAttribute("records", records);
 
-      return "user/getBmiRecords";
-    } else {
-
-      return "redirect:/";
-    }
+    return "user/getBmiRecords";
   }
 
-  
   @GetMapping("/insertBmiRecordForm")
   public String insertBmiRecordForm(HttpSession session) {
-    UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (sessionUser != null) {
-
-      return "user/insertBmiRecordForm";
-    } else {
-
-      return "redirect:/";
-    }
+    return "user/insertBmiRecordForm";
   }
 
   @PostMapping("/insertBmiRecord")
   public String insertBmiRecord(BmiRecordVO vo, HttpSession session) {
     UserVO sessionUser = (UserVO) session.getAttribute("user");
 
-    if (sessionUser != null) {
-      UserVO user = userService.getUser(sessionUser);
-      vo.setUser_id(user.getUser_id());
-      
-      // BMI 기록 삽입
-      userService.insertBmiRecord(vo);
+    UserVO user = userService.getUser(sessionUser);
+    vo.setUser_id(user.getUser_id());
 
-      return "redirect:/user/getBmiRecords"; 
-    } else {
+    userService.insertBmiRecord(vo);
 
-      return "redirect:/";
-    }
+    return "redirect:/user/getBmiRecords";
   }
 }

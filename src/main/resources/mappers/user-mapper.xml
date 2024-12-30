@@ -2,26 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.springboot.healthypath.user.UserDao">
+<mapper namespace="com.springboot.healthypath.dao.UserDao">
 
   <select id="getAllUsers"
-    parameterType="com.springboot.healthypath.user.UserVO"
-    resultType="com.springboot.healthypath.user.UserVO">
+    parameterType="com.springboot.healthypath.model.UserVO"
+    resultType="com.springboot.healthypath.model.UserVO">
       SELECT * FROM users ORDER BY user_id DESC
   </select>
 
   <select id="getUser"
-    parameterType="com.springboot.healthypath.user.UserVO"
-    resultType="com.springboot.healthypath.user.UserVO">
+    parameterType="com.springboot.healthypath.model.UserVO"
+    resultType="com.springboot.healthypath.model.UserVO">
       SELECT * FROM users WHERE email = #{email}
   </select>
 
-  <insert id="insertUserEmailAndName" parameterType="com.springboot.healthypath.user.UserVO">
+  <insert id="insertUserEmailAndName" parameterType="com.springboot.healthypath.model.UserVO">
 		INSERT INTO users (email, name)	VALUES (#{email}, #{name})
 	</insert>
 
   <!-- 프로시저 -->
-  <update id="updateUser" parameterType="com.springboot.healthypath.user.UserVO">
+  <update id="updateUser" parameterType="com.springboot.healthypath.model.UserVO">
       CALL update_user_info(
         #{email},
         #{name},
@@ -44,13 +44,13 @@
   </update>
 
   <select id="getBmiRecords"
-    parameterType="com.springboot.healthypath.user.UserVO"
-    resultType="com.springboot.healthypath.user.BmiRecordVO">
+    parameterType="com.springboot.healthypath.model.UserVO"
+    resultType="com.springboot.healthypath.model.BmiRecordVO">
       SELECT * FROM bmi_records WHERE user_id = #{user_id}
   </select>
 
   <!-- 프로시저 -->
-  <insert id="insertBmiRecord" parameterType="com.springboot.healthypath.user.BmiRecordVO">
+  <insert id="insertBmiRecord" parameterType="com.springboot.healthypath.model.BmiRecordVO">
       CALL insert_bmi_record(#{user_id}, #{weight})
   </insert>
 

@@ -1,4 +1,4 @@
-package com.springboot.healthypath.food;
+package com.springboot.healthypath.service;
 
 import java.util.HashMap;
 import java.util.Map;

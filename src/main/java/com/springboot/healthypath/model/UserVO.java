@@ -1,4 +1,4 @@
-package com.springboot.healthypath.user;
+package com.springboot.healthypath.model;
 
 import java.util.Date;
 

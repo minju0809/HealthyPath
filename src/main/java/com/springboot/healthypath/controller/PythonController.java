@@ -1,4 +1,4 @@
-package com.springboot.healthypath.food;
+package com.springboot.healthypath.controller;
 
 import java.io.*;
 

@@ -1,4 +1,4 @@
-package com.springboot.healthypath.food;
+package com.springboot.healthypath.model;
 
 import java.time.LocalDate;
 import java.util.Date;

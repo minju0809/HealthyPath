@@ -1,11 +1,15 @@
-package com.springboot.healthypath.food;
+package com.springboot.healthypath.dao;
 
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.springboot.healthypath.user.UserVO;
+import com.springboot.healthypath.model.DailyMealVO;
+import com.springboot.healthypath.model.FoodRecommendVO;
+import com.springboot.healthypath.model.FoodVO;
+import com.springboot.healthypath.model.RecipeVO;
+import com.springboot.healthypath.model.UserVO;
 
 @Mapper
 public interface FoodDao {

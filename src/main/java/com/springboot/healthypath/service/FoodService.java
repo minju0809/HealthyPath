@@ -1,4 +1,4 @@
-package com.springboot.healthypath.food;
+package com.springboot.healthypath.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.springboot.healthypath.user.UserVO;
+import com.springboot.healthypath.dao.FoodDao;
+import com.springboot.healthypath.model.DailyMealVO;
+import com.springboot.healthypath.model.FoodRecommendVO;
+import com.springboot.healthypath.model.FoodVO;
+import com.springboot.healthypath.model.RecipeVO;
+import com.springboot.healthypath.model.UserVO;
 
 @Service
 public class FoodService {

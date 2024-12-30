@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.springboot.healthypath.food.FoodDao">
+<mapper namespace="com.springboot.healthypath.dao.FoodDao">
 
   <!-- 식품명으로 검색 -->
-  <select id="searchFoodByName" parameterType="map" resultType="com.springboot.healthypath.food.FoodVO">
+  <select id="searchFoodByName" parameterType="map" resultType="com.springboot.healthypath.model.FoodVO">
     SELECT * FROM foods
     WHERE food_name LIKE CONCAT('%', #{food_name}, '%')
     <if test="page_size != null and offset != null">
@@ -14,7 +14,7 @@
   </select>
 
   <!-- 영양성분으로 검색 -->
-  <select id="searchFoodByNutrient" parameterType="map" resultType="com.springboot.healthypath.food.FoodVO">
+  <select id="searchFoodByNutrient" parameterType="map" resultType="com.springboot.healthypath.model.FoodVO">
     SELECT * FROM foods
     ORDER BY ${nutrient_column} DESC
     LIMIT #{page_size} OFFSET #{offset}
@@ -31,12 +31,12 @@
   </select>
 
   <!-- 상세 영양성분 보기 -->
-  <select id="getFood" parameterType="com.springboot.healthypath.food.FoodVO" resultType="com.springboot.healthypath.food.FoodVO">
+  <select id="getFood" parameterType="com.springboot.healthypath.model.FoodVO" resultType="com.springboot.healthypath.model.FoodVO">
     SELECT * FROM foods WHERE idx = #{idx}
   </select>
 
   <!-- 메뉴 3개 추천 -->
-  <select id="getFoodsByCategoryAndCalories" parameterType="com.springboot.healthypath.food.FoodRecommendVO" resultType="com.springboot.healthypath.food.FoodRecommendVO">
+  <select id="getFoodsByCategoryAndCalories" parameterType="com.springboot.healthypath.model.FoodRecommendVO" resultType="com.springboot.healthypath.model.FoodRecommendVO">
     SELECT idx, major_category_name, food_name, energy_kcal 
     FROM foods
     WHERE major_category_name = #{category} 
@@ -46,36 +46,36 @@
   </select>
 
   <!-- 추천 메뉴 저장 -->
-  <insert id="insertFoodRecommendation" parameterType="com.springboot.healthypath.food.FoodRecommendVO">
+  <insert id="insertFoodRecommendation" parameterType="com.springboot.healthypath.model.FoodRecommendVO">
     INSERT INTO food_recommendations (idx, user_id, food_name, major_category_name, energy_kcal)
     VALUES (#{idx}, #{user_id}, #{food_name}, #{major_category_name}, #{energy_kcal})
   </insert>
 
   <!-- 저장된 추천 메뉴 보기 -->
-  <select id="getFoodRecommendations" parameterType="com.springboot.healthypath.user.UserVO" resultType="com.springboot.healthypath.food.FoodRecommendVO">
+  <select id="getFoodRecommendations" parameterType="com.springboot.healthypath.model.UserVO" resultType="com.springboot.healthypath.model.FoodRecommendVO">
     SELECT * FROM food_recommendations WHERE user_id = (SELECT user_id FROM users WHERE email = #{email})
   </select>
 
-  <delete id="deleteFoodRecommendation" parameterType="com.springboot.healthypath.food.FoodRecommendVO">
+  <delete id="deleteFoodRecommendation" parameterType="com.springboot.healthypath.model.FoodRecommendVO">
     DELETE FROM food_recommendations WHERE recommendation_id = #{recommendation_id}
   </delete>
 
   <!-- 먹은 식단 보기 -->
-  <select id="getDailyMeals" parameterType="com.springboot.healthypath.user.UserVO" resultType="com.springboot.healthypath.food.DailyMealVO">
+  <select id="getDailyMeals" parameterType="com.springboot.healthypath.model.UserVO" resultType="com.springboot.healthypath.model.DailyMealVO">
     SELECT * FROM daily_meals
     WHERE user_id = #{user_id}
     ORDER BY FIELD(meal_time, '아침', '점심', '저녁', '간식'), date
   </select>
 
   <!-- 식단 저장 -->
-  <insert id="insertDailyMeal" parameterType="com.springboot.healthypath.food.DailyMealVO">
+  <insert id="insertDailyMeal" parameterType="com.springboot.healthypath.model.DailyMealVO">
     INSERT INTO daily_meals 
       (user_id, idx, date, meal_time, food_name, major_category_name, nutrient_reference_amount, energy_kcal, protein_g, fat_g, carbohydrate_g)
     VALUES (#{user_id}, #{idx}, #{date}, #{meal_time}, #{food_name}, #{major_category_name}, #{nutrient_reference_amount}, #{energy_kcal}, #{protein_g}, #{fat_g}, #{carbohydrate_g})
   </insert>
 
   <!-- 주간 식단 보기 -->
-  <select id="getWeeklyMeals" parameterType="com.springboot.healthypath.food.DailyMealVO" resultType="com.springboot.healthypath.food.DailyMealVO">
+  <select id="getWeeklyMeals" parameterType="com.springboot.healthypath.model.DailyMealVO" resultType="com.springboot.healthypath.model.DailyMealVO">
     SELECT * FROM daily_meals 
     WHERE user_id = #{user_id} 
       AND date BETWEEN #{start_date} AND #{end_date}
@@ -85,7 +85,7 @@
   
   <!-- ///// 레시피 ///// -->
   <!-- 레시피 조회 -->
-  <select id="getRecipes" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
+  <select id="getRecipes" parameterType="com.springboot.healthypath.model.RecipeVO" resultType="com.springboot.healthypath.model.RecipeVO">
     SELECT *
     FROM recipes
     <where>
@@ -104,7 +104,7 @@
   </select>
 
   <!-- 레시피 총 개수 조회 -->
-  <select id="getTotalCount" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="int">
+  <select id="getTotalCount" parameterType="com.springboot.healthypath.model.RecipeVO" resultType="int">
     SELECT COUNT(*)
     FROM recipes
     <where>
@@ -121,12 +121,12 @@
   </select>
 
   <!-- 상세 레시피 보기 -->
-  <select id="getRecipe" parameterType="com.springboot.healthypath.food.RecipeVO" resultType="com.springboot.healthypath.food.RecipeVO">
+  <select id="getRecipe" parameterType="com.springboot.healthypath.model.RecipeVO" resultType="com.springboot.healthypath.model.RecipeVO">
     SELECT * FROM recipes WHERE rcp_sno = #{rcp_sno}
   </select>
 
   <!-- 조회수 증가 -->
-  <update id="incrementViewCount" parameterType="com.springboot.healthypath.food.RecipeVO">
+  <update id="incrementViewCount" parameterType="com.springboot.healthypath.model.RecipeVO">
     UPDATE recipes SET inq_cnt = inq_cnt + 1 WHERE rcp_sno = #{rcp_sno}
   </update>
 

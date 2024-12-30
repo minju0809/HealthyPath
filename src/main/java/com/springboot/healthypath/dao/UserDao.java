@@ -1,8 +1,11 @@
-package com.springboot.healthypath.user;
+package com.springboot.healthypath.dao;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+
+import com.springboot.healthypath.model.BmiRecordVO;
+import com.springboot.healthypath.model.UserVO;
 
 @Mapper
 public interface UserDao {

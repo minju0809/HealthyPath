@@ -1,9 +1,13 @@
-package com.springboot.healthypath.user;
+package com.springboot.healthypath.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.springboot.healthypath.dao.UserDao;
+import com.springboot.healthypath.model.BmiRecordVO;
+import com.springboot.healthypath.model.UserVO;
 
 @Service
 public class UserService {

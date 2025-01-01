@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Room</title>
+    <style>
+      #chatContainer {
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      #messages {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
+
+      .message {
+        display: flex;
+        margin: 10px 0;
+      }
+
+      .sender {
+        justify-content: flex-end;
+      }
+
+      .receiver {
+        justify-content: flex-start;
+      }
+
+      .content {
+        background-color: #d1e7ff;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 200px;
+        word-wrap: break-word;
+      }
+
+      .sender .content {
+        background-color: #e0f7fa;
+      }
+
+      .receiver .content {
+        background-color: #ffebee;
+      }
+
+      #messageInputContainer {
+        display: flex;
+        align-items: center;
+      }
+
+      #messageInput {
+        width: 80%;
+        padding: 10px;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        padding: 10px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chatContainer">
+      <h1 style="text-align: center; margin: 20px 0">Chat Room</h1>
+      <div id="messages"></div>
+      <div id="messageInputContainer">
+        <input
+          type="text"
+          id="messageInput"
+          placeholder="Type your message here"
+        />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      let socket = new WebSocket("ws://localhost:8080/ws");
+      let mySessionId = null;
+      const messagesContainer = document.getElementById("messages");
+      const messageInput = document.getElementById("messageInput");
+
+      function sendMessage() {
+        const content = messageInput.value.trim();
+        if (content) {
+          const message = { content: content };
+          socket.send(JSON.stringify(message)); // 메시지를 JSON으로 전송
+          messageInput.value = "";
+        }
+      }
+
+      socket.onmessage = function (event) {
+        const messageData = JSON.parse(event.data);
+        if (!messageData.type) return;
+        switch (messageData.type) {
+          case "info":
+            mySessionId = messageData.sender;
+            break;
+          case "chat":
+            displayMessage(
+              messageData.sender,
+              messageData.content,
+              messageData.sender === mySessionId
+            );
+            break;
+        }
+      };
+
+      function displayMessage(sender, content, isSelf) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageDiv.classList.add(isSelf ? "sender" : "receiver");
+        const messageContent = document.createElement("div");
+        messageContent.classList.add("content");
+        messageContent.textContent = `${sender}: ${content}`;
+
+        messageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight; // 최신 메시지로 스크롤
+      }
+    </script>
+  </body>
+</html>

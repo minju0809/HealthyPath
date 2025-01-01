@@ -136,7 +136,7 @@ ul li span {
   display: flex;
   align-items: center;
   flex-grow: 1;
-  white-space: nowrap;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
 }

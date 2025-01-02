@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  healthy_path:
+    container_name: healthypath
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: healthy_path
+    ports:
+      - "3306:3306"
